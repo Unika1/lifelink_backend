@@ -1,20 +1,28 @@
-import express, { Application } from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import { PORT } from "./config/index.js";
-import { connectDatabase } from "./database/mongodb.js";
-import authRoutes from "./routes/auth.routes.js";
-
-dotenv.config();
+import express, { Application, Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import { connectDatabase } from './database/mongodb.js';
+import { PORT } from './config/index.js';
+import authRoutes from './routes/auth.routes.js';
 
 const app: Application = express();
 
 app.use(bodyParser.json());
-app.use("/api/auth", authRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
 
-async function start() {
-  await connectDatabase();
-  app.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));
+app.use('/api/auth', authRoutes);
+app.get('/', (req: Request, res: Response) => {
+    return res.status(200).json({ success: "true", message: "Welcome to the API" });
+});
+
+async function startServer() {
+    await connectDatabase();
+
+    app.listen(
+        PORT,
+        () => {
+            console.log(`Server: http://localhost:${PORT}`);
+        }
+    );
 }
 
-start().catch((error) => console.log(error));
+startServer();
