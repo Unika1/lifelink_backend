@@ -1,4 +1,5 @@
 import z from "zod";
+import { UserSchema } from "../types/user.types.js";
 
 /**
  * Register (Signup) DTO
@@ -30,3 +31,9 @@ export const LoginDTO = z.object({
 });
 
 export type LoginDTO = z.infer<typeof LoginDTO>;
+
+/**
+ * Update User DTO
+ */
+export const UpdateUserDTO = UserSchema.partial(); // all optional fields
+export type UpdateUserDTO = z.infer<typeof UpdateUserDTO>;
