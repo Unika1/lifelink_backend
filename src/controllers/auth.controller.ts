@@ -98,4 +98,40 @@ export class AuthController {
       });
     }
   }
+
+  async updateUserById(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      if (!userId) {
+        return res.status(400).json({ success: false, message: "User ID is required" });
+      }
+
+      const parsedData = UpdateUserDTO.safeParse(req.body);
+      if (!parsedData.success) {
+        return res.status(400).json({
+          success: false,
+          message: z.prettifyError(parsedData.error),
+        });
+      }
+
+      const dataToUpdate: any = { ...parsedData.data };
+
+      if (req.file) {
+        dataToUpdate.imageUrl = `/uploads/${req.file.filename}`;
+      }
+
+      const updatedUser = await userService.updateUser(userId, dataToUpdate);
+
+      return res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        data: updatedUser,
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
 }
