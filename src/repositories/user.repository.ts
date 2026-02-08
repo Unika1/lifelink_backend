@@ -6,6 +6,7 @@ export interface IUserRepository {
 
   getUserById(id: string): Promise<IUser | null>;
   getAllUsers(): Promise<IUser[]>;
+  getAllUsersWithPagination(page: number, limit: number): Promise<{ users: IUser[]; totalUsers: number }>;
   updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null>;
   deleteUser(id: string): Promise<boolean>;
 }
@@ -26,6 +27,15 @@ export class UserRepository implements IUserRepository {
 
   async getAllUsers(): Promise<IUser[]> {
     return await UserModel.find();
+  }
+
+  async getAllUsersWithPagination(page: number, limit: number): Promise<{ users: IUser[]; totalUsers: number }> {
+    const skip = (page - 1) * limit;
+    const [users, totalUsers] = await Promise.all([
+      UserModel.find().skip(skip).limit(limit),
+      UserModel.countDocuments()
+    ]);
+    return { users, totalUsers };
   }
 
   async updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
