@@ -41,12 +41,26 @@ export class AdminController {
   }
 
   /**
-   * GET /api/admin/users - Get all users
+   * GET /api/admin/users - Get all users with optional pagination
+   * Query params: page=1, limit=10
    */
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await adminUserService.getAllUsers();
+      const { page, limit } = req.query as { page?: string; limit?: string };
 
+      // If pagination params provided, use pagination
+      if (page || limit) {
+        const { users, pagination } = await adminUserService.getAllUsersWithPagination(page, limit);
+        return res.status(200).json({
+          success: true,
+          data: users,
+          pagination,
+          message: "Users retrieved successfully",
+        });
+      }
+
+      // Otherwise, get all users without pagination
+      const users = await adminUserService.getAllUsers();
       return res.status(200).json({
         success: true,
         data: users,
