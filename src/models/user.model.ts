@@ -11,8 +11,8 @@ const UserSchema:Schema = new Schema <UserType> (
     imageUrl: { type: String, default: "" },
     role: {
             type: String,
-            enum: ['user', 'admin'],
-            default:'user',
+            enum: ['donor', 'hospital', 'admin'],
+            default:'donor',
     }
   },
   { timestamps: true }
