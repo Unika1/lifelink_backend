@@ -1,16 +1,14 @@
 import express, { Application, Request, Response } from "express";
 import bodyParser from "body-parser";
 import path from "path";
-import { fileURLToPath } from "url";
 import cors from "cors";
 
 import { connectDatabase } from "./database/mongodb.js";
 import { PORT } from "./config/index.js";
 import authRoutes from "./routes/auth.routes.js";
 import adminRoutes from "./routes/admin/admin.routes.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import hospitalRoutes from "./routes/hospital.route.js";
+import eligibilityRoutes from "./routes/eligibility.route.js";
 
 const app: Application = express();
 
@@ -24,10 +22,13 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+// Resolve uploads path consistently across test/runtime environments
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/hospitals", hospitalRoutes);
+app.use("/api/eligibility", eligibilityRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   return res.status(200).json({
