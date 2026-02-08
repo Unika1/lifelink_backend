@@ -1,0 +1,152 @@
+import { HospitalRepository } from "../repositories/hospital.repository.js";
+import { HttpError } from "../errors/http-error.js";
+import {
+  CreateHospitalDTO,
+  UpdateHospitalDTO,
+  UpdateBloodInventoryDTO,
+  SearchHospitalDTO,
+} from "../dtos/hospital.dto.js";
+
+const hospitalRepository = new HospitalRepository();
+
+/**
+ * Hospital Service - Business Logic Layer
+ * Handles all hospital-related operations
+ */
+export class HospitalService {
+  /**
+   * Create a new hospital
+   */
+  async createHospital(data: CreateHospitalDTO) {
+    // Check if hospital email already exists
+    const existingHospital = await hospitalRepository.getHospitalByEmail(
+      data.email
+    );
+    if (existingHospital) {
+      throw new HttpError(403, "Hospital with this email already exists");
+    }
+
+    // Initialize empty blood inventory for all blood types
+    const initialInventory = [
+      "A+",
+      "A-",
+      "B+",
+      "B-",
+      "AB+",
+      "AB-",
+      "O+",
+      "O-",
+    ].map((bloodType) => ({
+      bloodType,
+      unitsAvailable: 0,
+      lastUpdated: new Date(),
+    }));
+
+    const hospitalData = {
+      ...data,
+      bloodInventory: initialInventory as any,
+    };
+
+    const newHospital = await hospitalRepository.createHospital(hospitalData);
+    return newHospital;
+  }
+
+  /**
+   * Get all hospitals
+   */
+  async getAllHospitals() {
+    const hospitals = await hospitalRepository.getAllHospitals();
+    return hospitals;
+  }
+
+  /**
+   * Get hospital by ID
+   */
+  async getHospitalById(id: string) {
+    const hospital = await hospitalRepository.getHospitalById(id);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+    return hospital;
+  }
+
+  /**
+   * Search hospitals by criteria
+   */
+  async searchHospitals(criteria: SearchHospitalDTO) {
+    const hospitals = await hospitalRepository.searchHospitals(criteria);
+    return hospitals;
+  }
+
+  /**
+   * Update hospital information
+   */
+  async updateHospital(id: string, updateData: UpdateHospitalDTO) {
+    const hospital = await hospitalRepository.getHospitalById(id);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    // Check email uniqueness if email is being updated
+    if (updateData.email && hospital.email !== updateData.email) {
+      const emailExists = await hospitalRepository.getHospitalByEmail(
+        updateData.email
+      );
+      if (emailExists) {
+        throw new HttpError(403, "Email already in use by another hospital");
+      }
+    }
+
+    const updatedHospital = await hospitalRepository.updateHospital(
+      id,
+      updateData
+    );
+    return updatedHospital;
+  }
+
+  /**
+   * Delete hospital
+   */
+  async deleteHospital(id: string) {
+    const hospital = await hospitalRepository.getHospitalById(id);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    const deleted = await hospitalRepository.deleteHospital(id);
+    return deleted;
+  }
+
+  /**
+   * Update blood inventory for specific blood type
+   */
+  async updateBloodInventory(
+    hospitalId: string,
+    inventoryData: UpdateBloodInventoryDTO
+  ) {
+    const hospital = await hospitalRepository.getHospitalById(hospitalId);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    const updatedHospital = await hospitalRepository.updateBloodInventory(
+      hospitalId,
+      inventoryData.bloodType,
+      inventoryData.unitsAvailable
+    );
+
+    return updatedHospital;
+  }
+
+  /**
+   * Get blood inventory for a hospital
+   */
+  async getBloodInventory(hospitalId: string) {
+    const hospital = await hospitalRepository.getHospitalById(hospitalId);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    return hospital.bloodInventory || [];
+  }
+}
