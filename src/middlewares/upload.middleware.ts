@@ -5,10 +5,11 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 // Ensure the uploads directory exists
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, "../../uploads");
+// Use __dirname like 35A, but keep it safe for ESM
+const moduleDir = typeof __dirname !== "undefined"
+  ? __dirname
+  : path.dirname(fileURLToPath(import.meta.url));
+const uploadDir = path.join(moduleDir, "../../uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
