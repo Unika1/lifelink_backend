@@ -2,8 +2,9 @@ import { UserRepository } from "../repositories/user.repository.js";
 import bcryptjs from "bcryptjs";
 import { HttpError } from "../errors/http-error.js";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/index.js";
+import { JWT_SECRET, CLIENT_URL } from "../config/index.js";
 import { LoginDTO, RegisterDTO, UpdateUserDTO } from "../dtos/user.dto.js";
+import { sendEmail } from "../config/email.js";
 
 let userRepository = new UserRepository();
 
@@ -75,5 +76,58 @@ export class UserService {
 
     const updatedUser = await userRepository.updateUser(userId, data);
     return updatedUser;
+  }
+
+  async sendResetPasswordEmail(email?: string) {
+    if (!email) {
+      throw new HttpError(400, "Email is required");
+    }
+    const user = await userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new HttpError(404, "User not found");
+    }
+
+    // Generate JWT token with 1 hour expiry
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
+    
+    // Create HTML email
+    const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
+    
+    await sendEmail(user.email, "Password Reset Request", html);
+    return user;
+  }
+
+  async resetPassword(token?: string, newPassword?: string) {
+    try {
+      if (!token || !newPassword) {
+        throw new HttpError(400, "Token and new password are required");
+      }
+
+      // Verify JWT token
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      const userId = decoded.id;
+
+      const user = await userRepository.getUserById(userId);
+      if (!user) {
+        throw new HttpError(404, "User not found");
+      }
+
+      // Hash new password
+      const hashedPassword = await bcryptjs.hash(newPassword, 10);
+      
+      // Update password in DB
+      await userRepository.updateUser(userId, { password: hashedPassword });
+      
+      return user;
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError") {
+        throw new HttpError(400, "Reset token has expired");
+      }
+      if (error.name === "JsonWebTokenError") {
+        throw new HttpError(400, "Invalid reset token");
+      }
+      throw error;
+    }
   }
 }
