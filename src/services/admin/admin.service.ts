@@ -26,6 +26,30 @@ export class AdminUserService {
     return users;
   }
 
+  async getAllUsersWithPagination(page?: string, limit?: string) {
+    const currentPage = page ? parseInt(page) : 1;
+    const currentLimit = limit ? parseInt(limit) : 10;
+
+    // Validate pagination params
+    if (currentPage < 1) {
+      throw new HttpError(400, "Page must be greater than 0");
+    }
+    if (currentLimit < 1) {
+      throw new HttpError(400, "Limit must be greater than 0");
+    }
+
+    const { users, totalUsers } = await userRepository.getAllUsersWithPagination(currentPage, currentLimit);
+    
+    const pagination = {
+      page: currentPage,
+      limit: currentLimit,
+      total: totalUsers,
+      totalPages: Math.ceil(totalUsers / currentLimit),
+    };
+
+    return { users, pagination };
+  }
+
   async getUserById(id: string) {
     const user = await userRepository.getUserById(id);
     if (!user) {
