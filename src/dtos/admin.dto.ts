@@ -11,7 +11,7 @@ export const AdminCreateUserDTO = z
     email: z.string().email("Please enter a valid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm your password"),
-    role: z.enum(["user", "admin"]).default("user"),
+    role: z.enum(["donor", "hospital", "admin"]).default("donor"),
     imageUrl: z.string().optional(),
   })
   .refine(
@@ -32,7 +32,7 @@ export const AdminUpdateUserDTO = z
     firstName: z.string().min(2, "First name is required").optional(),
     lastName: z.string().min(2, "Last name is required").optional(),
     email: z.string().email("Please enter a valid email").optional(),
-    role: z.enum(["user", "admin"]).optional(),
+    role: z.enum(["donor", "hospital", "admin"]).optional(),
     imageUrl: z.string().optional(),
   })
   .strict();
