@@ -11,3 +11,6 @@ export const MONGODB_URI: string =
 
 export const JWT_SECRET: string =
   process.env.JWT_SECRET || "lifelink_secret";
+
+export const CLIENT_URL: string =
+  process.env.CLIENT_URL || "http://localhost:3000";
