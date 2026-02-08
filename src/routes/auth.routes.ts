@@ -7,15 +7,17 @@ const router = Router();
 const controller = new AuthController();
 
 // Public routes
-router.post("/register", controller.register.bind(controller));
-router.post("/login", controller.login.bind(controller));
+router.post("/register", controller.register);
+router.post("/login", controller.login);
+router.post("/request-password-reset", controller.sendResetPasswordEmail);
+router.post("/reset-password/:token", controller.resetPassword);
 
 // Protected routes
 router.put(
   "/update-profile",
   authorizedMiddleware,
   uploads.single("image"),
-  controller.updateProfile.bind(controller)
+  controller.updateProfile
 );
 
 // PUT /api/auth/:id - Update user by id with optional image upload
@@ -23,7 +25,7 @@ router.put(
   "/:id",
   authorizedMiddleware,
   uploads.single("image"),
-  controller.updateUserById.bind(controller)
+  controller.updateUserById
 );
 
 export default router;
