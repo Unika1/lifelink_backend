@@ -17,7 +17,7 @@ router.post(
   authorizedMiddleware,
   adminMiddleware,
   uploads.single("image"),
-  controller.createUser.bind(controller)
+  controller.createUser
 );
 
 // GET /api/admin/users - Get all users
@@ -25,7 +25,7 @@ router.get(
   "/users",
   authorizedMiddleware,
   adminMiddleware,
-  controller.getAllUsers.bind(controller)
+  controller.getAllUsers
 );
 
 // GET /api/admin/users/:id - Get user by id
@@ -33,7 +33,7 @@ router.get(
   "/users/:id",
   authorizedMiddleware,
   adminMiddleware,
-  controller.getUserById.bind(controller)
+  controller.getUserById
 );
 
 // PUT /api/admin/users/:id - Update user with optional image upload
@@ -42,7 +42,7 @@ router.put(
   authorizedMiddleware,
   adminMiddleware,
   uploads.single("image"),
-  controller.updateUser.bind(controller)
+  controller.updateUser
 );
 
 // DELETE /api/admin/users/:id - Delete user
@@ -50,7 +50,7 @@ router.delete(
   "/users/:id",
   authorizedMiddleware,
   adminMiddleware,
-  controller.deleteUser.bind(controller)
+  controller.deleteUser
 );
 
 export default router;
