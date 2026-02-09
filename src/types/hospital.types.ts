@@ -5,7 +5,7 @@ import z from "zod";
  * Tracks available blood units by type
  */
 export const BloodInventorySchema = z.object({
-  bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+  bloodType: z.string().min(1),
   unitsAvailable: z.number().min(0).default(0),
   lastUpdated: z.date().optional(),
 });
