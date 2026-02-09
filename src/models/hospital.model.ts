@@ -7,7 +7,6 @@ import { HospitalType, BloodInventory } from "../types/hospital.types.js";
 const BloodInventorySchema = new Schema({
   bloodType: {
     type: String,
-    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     required: true,
   },
   unitsAvailable: {
