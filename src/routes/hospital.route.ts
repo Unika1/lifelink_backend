@@ -23,6 +23,20 @@ router.get(
   hospitalController.getBloodInventory
 );
 
+// POST /api/hospitals/:id/inventory - Add blood type to inventory
+router.post(
+  "/:id/inventory",
+  authorizedMiddleware,
+  hospitalController.addBloodInventory
+);
+
+// GET /api/hospitals/donors - Get all donors (hospital/admin)
+router.get(
+  "/donors",
+  authorizedMiddleware,
+  hospitalController.getAllDonors
+);
+
 /**
  * Protected Routes - Only admins or hospital staff
  */
@@ -57,6 +71,13 @@ router.put(
   "/:id/inventory",
   authorizedMiddleware,
   hospitalController.updateBloodInventory
+);
+
+// DELETE /api/hospitals/:id/inventory/:bloodType - Remove blood type
+router.delete(
+  "/:id/inventory/:bloodType",
+  authorizedMiddleware,
+  hospitalController.deleteBloodInventory
 );
 
 export default router;
