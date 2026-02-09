@@ -11,6 +11,7 @@ export const RegisterDTO = z
     email: z.string().email("Please enter a valid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm your password"),
+    role: z.enum(["donor", "hospital"]).default("donor"),
   })
   .refine(
     (data) => data.password === data.confirmPassword,
