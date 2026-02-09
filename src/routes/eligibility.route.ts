@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { EligibilityController } from "../controllers/eligibility.controller.js";
-import { authorizedMiddleware } from "../middlewares/auth.middleware.js";
+import { authorizedMiddleware, hospitalOrAdminMiddleware } from "../middlewares/auth.middleware.js";
+import { adminMiddleware } from "../middlewares/admin.middleware.js";
 
 const router = Router();
 const eligibilityController = new EligibilityController();
@@ -42,6 +43,34 @@ router.get(
   "/questionnaire",
   authorizedMiddleware,
   eligibilityController.getUserQuestionnaire
+);
+
+/**
+ * Admin Routes
+ */
+
+// GET /api/eligibility/admin/questionnaires - Get all questionnaires
+router.get(
+  "/admin/questionnaires",
+  authorizedMiddleware,
+  adminMiddleware,
+  eligibilityController.getAllQuestionnaires
+);
+
+// GET /api/eligibility/admin/questionnaires/:userId - Get latest questionnaire for a user
+router.get(
+  "/admin/questionnaires/:userId",
+  authorizedMiddleware,
+  adminMiddleware,
+  eligibilityController.getLatestQuestionnaireForUser
+);
+
+// GET /api/eligibility/hospital/questionnaires/:userId - Hospital: get latest questionnaire for a user
+router.get(
+  "/hospital/questionnaires/:userId",
+  authorizedMiddleware,
+  hospitalOrAdminMiddleware,
+  eligibilityController.getLatestQuestionnaireForUser
 );
 
 export default router;
