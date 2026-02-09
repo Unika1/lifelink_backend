@@ -5,6 +5,8 @@ import {
   CreateHospitalDTO,
   UpdateHospitalDTO,
   UpdateBloodInventoryDTO,
+  CreateBloodInventoryDTO,
+  DeleteBloodInventoryDTO,
   SearchHospitalDTO,
 } from "../dtos/hospital.dto.js";
 
@@ -184,6 +186,46 @@ export class HospitalController {
   }
 
   /**
+   * POST /api/hospitals/:id/inventory
+   * Add a new blood type to inventory
+   */
+  async addBloodInventory(req: Request, res: Response) {
+    try {
+      const hospitalId = req.params.id;
+      if (!hospitalId) {
+        return res.status(400).json({
+          success: false,
+          message: "Hospital ID is required",
+        });
+      }
+
+      const parsedData = CreateBloodInventoryDTO.safeParse(req.body);
+      if (!parsedData.success) {
+        return res.status(400).json({
+          success: false,
+          message: z.prettifyError(parsedData.error),
+        });
+      }
+
+      const updatedHospital = await hospitalService.addBloodInventory(
+        hospitalId,
+        parsedData.data
+      );
+
+      return res.status(201).json({
+        success: true,
+        message: "Blood type added successfully",
+        data: updatedHospital,
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+
+  /**
    * PUT /api/hospitals/:id/inventory
    * Update blood inventory for hospital
    */
@@ -224,6 +266,48 @@ export class HospitalController {
   }
 
   /**
+   * DELETE /api/hospitals/:id/inventory/:bloodType
+   * Remove a blood type from inventory
+   */
+  async deleteBloodInventory(req: Request, res: Response) {
+    try {
+      const hospitalId = req.params.id;
+      const bloodType = req.params.bloodType;
+
+      if (!hospitalId || !bloodType) {
+        return res.status(400).json({
+          success: false,
+          message: "Hospital ID and blood type are required",
+        });
+      }
+
+      const parsedData = DeleteBloodInventoryDTO.safeParse({ bloodType });
+      if (!parsedData.success) {
+        return res.status(400).json({
+          success: false,
+          message: z.prettifyError(parsedData.error),
+        });
+      }
+
+      const updatedHospital = await hospitalService.deleteBloodInventory(
+        hospitalId,
+        parsedData.data
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Blood type removed successfully",
+        data: updatedHospital,
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+
+  /**
    * GET /api/hospitals/:id/inventory
    * Get blood inventory for hospital
    */
@@ -243,6 +327,26 @@ export class HospitalController {
         success: true,
         data: inventory,
         message: "Blood inventory retrieved successfully",
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+
+  /**
+   * GET /api/hospitals/donors
+   * Get all donors
+   */
+  async getAllDonors(req: Request, res: Response) {
+    try {
+      const donors = await hospitalService.getAllDonors();
+      return res.status(200).json({
+        success: true,
+        data: donors,
+        message: "Donors retrieved successfully",
       });
     } catch (error: any) {
       return res.status(error.statusCode ?? 500).json({
