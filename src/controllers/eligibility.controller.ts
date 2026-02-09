@@ -107,4 +107,54 @@ export class EligibilityController {
       });
     }
   }
+
+  /**
+   * GET /api/eligibility/admin/questionnaires
+   * Admin: list all questionnaires
+   */
+  async getAllQuestionnaires(req: Request, res: Response) {
+    try {
+      const questionnaires = await eligibilityService.getAllQuestionnaires();
+
+      return res.status(200).json({
+        success: true,
+        message: "Questionnaires retrieved successfully",
+        data: questionnaires,
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+
+  /**
+   * GET /api/eligibility/admin/questionnaires/:userId
+   * Admin: get latest questionnaire for a user
+   */
+  async getLatestQuestionnaireForUser(req: Request, res: Response) {
+    try {
+      const userId = req.params.userId;
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "User ID is required",
+        });
+      }
+
+      const questionnaire = await eligibilityService.getLatestQuestionnaireForUser(userId);
+
+      return res.status(200).json({
+        success: true,
+        message: "Questionnaire retrieved successfully",
+        data: questionnaire,
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
 }
