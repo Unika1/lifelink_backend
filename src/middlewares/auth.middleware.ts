@@ -77,3 +77,23 @@ export const adminOnlyMiddleware = (
     });
   }
 };
+
+export const hospitalOrAdminMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const role = (req.user as any)?.role;
+    if (role === "hospital" || role === "admin") {
+      next();
+    } else {
+      throw new HttpError(403, "Forbidden, hospitals only");
+    }
+  } catch (error: any) {
+    return res.status(error.statusCode || 403).json({
+      success: false,
+      message: error.message || "Forbidden",
+    });
+  }
+};
