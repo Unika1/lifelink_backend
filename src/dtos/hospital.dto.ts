@@ -31,11 +31,32 @@ export type UpdateHospitalDTO = z.infer<typeof UpdateHospitalDTO>;
  * For updating specific blood type units
  */
 export const UpdateBloodInventoryDTO = z.object({
-  bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+  bloodType: z.string().min(1),
   unitsAvailable: z.number().min(0),
 });
 
 export type UpdateBloodInventoryDTO = z.infer<typeof UpdateBloodInventoryDTO>;
+
+/**
+ * Create Blood Inventory DTO
+ * For adding a new blood type entry
+ */
+export const CreateBloodInventoryDTO = z.object({
+  bloodType: z.string().min(1),
+  unitsAvailable: z.number().min(0).default(0),
+});
+
+export type CreateBloodInventoryDTO = z.infer<typeof CreateBloodInventoryDTO>;
+
+/**
+ * Delete Blood Inventory DTO
+ * For removing a blood type entry
+ */
+export const DeleteBloodInventoryDTO = z.object({
+  bloodType: z.string().min(1),
+});
+
+export type DeleteBloodInventoryDTO = z.infer<typeof DeleteBloodInventoryDTO>;
 
 /**
  * Search Hospital DTO
@@ -44,7 +65,7 @@ export type UpdateBloodInventoryDTO = z.infer<typeof UpdateBloodInventoryDTO>;
 export const SearchHospitalDTO = z.object({
   city: z.string().optional(),
   state: z.string().optional(),
-  bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
+  bloodType: z.string().optional(),
   isActive: z.boolean().optional(),
 });
 
