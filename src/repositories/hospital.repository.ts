@@ -9,10 +9,19 @@ export interface IHospitalRepository {
   searchHospitals(criteria: SearchHospitalDTO): Promise<IHospital[]>;
   updateHospital(id: string, data: Partial<IHospital>): Promise<IHospital | null>;
   deleteHospital(id: string): Promise<boolean>;
+  addBloodInventory(
+    hospitalId: string,
+    bloodType: string,
+    units: number
+  ): Promise<IHospital | null>;
   updateBloodInventory(
     hospitalId: string,
     bloodType: string,
     units: number
+  ): Promise<IHospital | null>;
+  deleteBloodInventory(
+    hospitalId: string,
+    bloodType: string
   ): Promise<IHospital | null>;
 }
 
@@ -116,22 +125,63 @@ export class HospitalRepository implements IHospitalRepository {
       (item) => item.bloodType === bloodType
     );
 
-    if (inventoryItem) {
-      // Update existing inventory
-      inventoryItem.unitsAvailable = units;
-      inventoryItem.lastUpdated = new Date();
-    } else {
-      // Add new blood type to inventory
-      if (!hospital.bloodInventory) {
-        hospital.bloodInventory = [];
-      }
-      hospital.bloodInventory.push({
-        bloodType: bloodType as any,
-        unitsAvailable: units,
-        lastUpdated: new Date(),
-      });
+    if (!inventoryItem) return null;
+
+    inventoryItem.unitsAvailable = units;
+    inventoryItem.lastUpdated = new Date();
+
+    return await hospital.save();
+  }
+
+  /**
+   * Add a new blood type to inventory
+   */
+  async addBloodInventory(
+    hospitalId: string,
+    bloodType: string,
+    units: number
+  ): Promise<IHospital | null> {
+    const hospital = await HospitalModel.findById(hospitalId);
+    if (!hospital) return null;
+
+    const existing = hospital.bloodInventory?.find(
+      (item) => item.bloodType.toLowerCase() === bloodType.toLowerCase()
+    );
+    if (existing) return null;
+
+    if (!hospital.bloodInventory) {
+      hospital.bloodInventory = [];
     }
 
+    hospital.bloodInventory.push({
+      bloodType,
+      unitsAvailable: units,
+      lastUpdated: new Date(),
+    });
+
+    return await hospital.save();
+  }
+
+  /**
+   * Delete a blood type from inventory
+   */
+  async deleteBloodInventory(
+    hospitalId: string,
+    bloodType: string
+  ): Promise<IHospital | null> {
+    const hospital = await HospitalModel.findById(hospitalId);
+    if (!hospital) return null;
+
+    const inventory = hospital.bloodInventory || [];
+    const nextInventory = inventory.filter(
+      (item) => item.bloodType.toLowerCase() !== bloodType.toLowerCase()
+    );
+
+    if (nextInventory.length === inventory.length) {
+      return null;
+    }
+
+    hospital.bloodInventory = nextInventory;
     return await hospital.save();
   }
 }
