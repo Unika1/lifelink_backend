@@ -4,10 +4,14 @@ import {
   CreateHospitalDTO,
   UpdateHospitalDTO,
   UpdateBloodInventoryDTO,
+  CreateBloodInventoryDTO,
+  DeleteBloodInventoryDTO,
   SearchHospitalDTO,
 } from "../dtos/hospital.dto.js";
+import { UserRepository } from "../repositories/user.repository.js";
 
 const hospitalRepository = new HospitalRepository();
+const userRepository = new UserRepository();
 
 /**
  * Hospital Service - Business Logic Layer
@@ -135,6 +139,59 @@ export class HospitalService {
       inventoryData.unitsAvailable
     );
 
+    if (!updatedHospital) {
+      throw new HttpError(404, "Blood type not found in inventory");
+    }
+
+    return updatedHospital;
+  }
+
+  /**
+   * Add a new blood type to inventory
+   */
+  async addBloodInventory(
+    hospitalId: string,
+    inventoryData: CreateBloodInventoryDTO
+  ) {
+    const hospital = await hospitalRepository.getHospitalById(hospitalId);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    const updatedHospital = await hospitalRepository.addBloodInventory(
+      hospitalId,
+      inventoryData.bloodType,
+      inventoryData.unitsAvailable
+    );
+
+    if (!updatedHospital) {
+      throw new HttpError(409, "Blood type already exists in inventory");
+    }
+
+    return updatedHospital;
+  }
+
+  /**
+   * Remove a blood type from inventory
+   */
+  async deleteBloodInventory(
+    hospitalId: string,
+    inventoryData: DeleteBloodInventoryDTO
+  ) {
+    const hospital = await hospitalRepository.getHospitalById(hospitalId);
+    if (!hospital) {
+      throw new HttpError(404, "Hospital not found");
+    }
+
+    const updatedHospital = await hospitalRepository.deleteBloodInventory(
+      hospitalId,
+      inventoryData.bloodType
+    );
+
+    if (!updatedHospital) {
+      throw new HttpError(404, "Blood type not found in inventory");
+    }
+
     return updatedHospital;
   }
 
@@ -148,5 +205,12 @@ export class HospitalService {
     }
 
     return hospital.bloodInventory || [];
+  }
+
+  /**
+   * Get all donors (role=donor)
+   */
+  async getAllDonors() {
+    return await userRepository.getUsersByRole("donor");
   }
 }

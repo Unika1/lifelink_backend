@@ -64,6 +64,24 @@ export class EligibilityService {
   }
 
   /**
+   * Admin: get all questionnaires
+   */
+  async getAllQuestionnaires() {
+    return await eligibilityRepository.getAllQuestionnaires();
+  }
+
+  /**
+   * Admin: get latest questionnaire for a user
+   */
+  async getLatestQuestionnaireForUser(userId: string) {
+    const questionnaire = await eligibilityRepository.getLatestQuestionnaire(userId);
+    if (!questionnaire) {
+      throw new HttpError(404, "No questionnaire found for this user");
+    }
+    return questionnaire;
+  }
+
+  /**
    * Core eligibility assessment logic
    * Contains all eligibility rules
    */
