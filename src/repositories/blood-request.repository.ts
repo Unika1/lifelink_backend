@@ -1,5 +1,6 @@
 import { BloodRequestModel, IBloodRequest } from "../models/blood-request.model.js";
 import { SearchBloodRequestDTO } from "../dtos/blood-request.dto.js";
+import mongoose from "mongoose";
 
 export interface IBloodRequestRepository {
   createRequest(data: Partial<IBloodRequest>): Promise<IBloodRequest>;
@@ -16,7 +17,15 @@ export class BloodRequestRepository implements IBloodRequestRepository {
   }
 
   async getRequestById(id: string): Promise<IBloodRequest | null> {
-    return await BloodRequestModel.findById(id);
+    console.log("[BloodRequestRepository] Getting request by ID:", id);
+    // Validate if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("[BloodRequestRepository] Invalid ObjectId format");
+      return null;
+    }
+    const result = await BloodRequestModel.findById(id);
+    console.log("[BloodRequestRepository] Query result:", result ? "Found" : "Not found");
+    return result;
   }
 
   async getAllRequests(criteria?: SearchBloodRequestDTO): Promise<IBloodRequest[]> {
@@ -45,10 +54,16 @@ export class BloodRequestRepository implements IBloodRequestRepository {
     id: string,
     data: Partial<IBloodRequest>
   ): Promise<IBloodRequest | null> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
     return await BloodRequestModel.findByIdAndUpdate(id, data, { new: true });
   }
 
   async deleteRequest(id: string): Promise<boolean> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return false;
+    }
     const result = await BloodRequestModel.findByIdAndDelete(id);
     return result ? true : false;
   }
