@@ -9,8 +9,8 @@ export const BloodRequestSchema = z.object({
   status: z.enum(["pending", "approved", "rejected", "fulfilled"]).default("pending"),
   requestedBy: z.string().optional(),
   contactPhone: z.string().optional(),
-  neededBy: z.date().optional(),
-  scheduledAt: z.date().optional(),
+  neededBy: z.coerce.date().optional(),
+  scheduledAt: z.coerce.date().optional(),
   notes: z.string().optional(),
 });
 
