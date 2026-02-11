@@ -17,6 +17,12 @@ export const adminMiddleware = (
       throw new HttpError(401, "Unauthorized, User not found");
     }
 
+    console.log("[admin] user", {
+      id: (user as any)._id?.toString?.() || (user as any)._id,
+      role: (user as any).role,
+      email: (user as any).email,
+    });
+
     if (user.role !== "admin") {
       throw new HttpError(
         403,

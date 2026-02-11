@@ -46,6 +46,12 @@ export const authorizedMiddleware = async (
       throw new HttpError(401, "Unauthorized, User not found");
     }
 
+    console.log("[auth] user", {
+      id: (user as any)._id?.toString?.() || (user as any)._id,
+      role: (user as any).role,
+      email: (user as any).email,
+    });
+
     // attach user to request object
     req.user = user;
 
