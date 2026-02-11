@@ -14,6 +14,13 @@ const hospitalController = new HospitalController();
 // GET /api/hospitals - Get all hospitals or search
 router.get("/", hospitalController.getAllHospitals);
 
+// GET /api/hospitals/donors - Get all donors (hospital/admin) - MUST come before /:id route
+router.get(
+  "/donors",
+  authorizedMiddleware,
+  hospitalController.getAllDonors
+);
+
 // GET /api/hospitals/:id - Get hospital by ID
 router.get("/:id", hospitalController.getHospitalById);
 
@@ -28,13 +35,6 @@ router.post(
   "/:id/inventory",
   authorizedMiddleware,
   hospitalController.addBloodInventory
-);
-
-// GET /api/hospitals/donors - Get all donors (hospital/admin)
-router.get(
-  "/donors",
-  authorizedMiddleware,
-  hospitalController.getAllDonors
 );
 
 /**
