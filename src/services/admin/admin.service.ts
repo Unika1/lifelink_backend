@@ -26,7 +26,7 @@ export class AdminUserService {
     return users;
   }
 
-  async getAllUsersWithPagination(page?: string, limit?: string) {
+  async getAllUsersWithPagination(page?: string, limit?: string, role?: string) {
     const currentPage = page ? parseInt(page) : 1;
     const currentLimit = limit ? parseInt(limit) : 10;
 
@@ -38,7 +38,11 @@ export class AdminUserService {
       throw new HttpError(400, "Limit must be greater than 0");
     }
 
-    const { users, totalUsers } = await userRepository.getAllUsersWithPagination(currentPage, currentLimit);
+    const { users, totalUsers } = await userRepository.getAllUsersWithPagination(
+      currentPage,
+      currentLimit,
+      role
+    );
     
     const pagination = {
       page: currentPage,
@@ -48,6 +52,10 @@ export class AdminUserService {
     };
 
     return { users, pagination };
+  }
+
+  async getUsersByRole(role: string) {
+    return await userRepository.getUsersByRole(role);
   }
 
   async getUserById(id: string) {
