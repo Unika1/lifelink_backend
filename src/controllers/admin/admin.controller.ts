@@ -46,15 +46,39 @@ export class AdminController {
    */
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { page, limit } = req.query as { page?: string; limit?: string };
+      const { page, limit, role } = req.query as {
+        page?: string;
+        limit?: string;
+        role?: string;
+      };
+
+      if (role && !["donor", "hospital", "admin"].includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid role filter",
+        });
+      }
 
       // If pagination params provided, use pagination
       if (page || limit) {
-        const { users, pagination } = await adminUserService.getAllUsersWithPagination(page, limit);
+        const { users, pagination } = await adminUserService.getAllUsersWithPagination(
+          page,
+          limit,
+          role
+        );
         return res.status(200).json({
           success: true,
           data: users,
           pagination,
+          message: "Users retrieved successfully",
+        });
+      }
+
+      if (role) {
+        const users = await adminUserService.getUsersByRole(role);
+        return res.status(200).json({
+          success: true,
+          data: users,
           message: "Users retrieved successfully",
         });
       }

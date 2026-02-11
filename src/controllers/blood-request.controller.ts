@@ -80,6 +80,7 @@ export class BloodRequestController {
   async getRequestById(req: Request, res: Response) {
     try {
       const requestId = req.params.id;
+      console.log("[getRequestById] Fetching request with ID:", requestId);
       if (!requestId) {
         return res.status(400).json({
           success: false,
@@ -88,12 +89,14 @@ export class BloodRequestController {
       }
 
       const request = await bloodRequestService.getRequestById(requestId);
+      console.log("[getRequestById] Found request:", request);
       return res.status(200).json({
         success: true,
         message: "Request retrieved successfully",
         data: request,
       });
     } catch (error: any) {
+      console.error("[getRequestById] Error:", error.message);
       return res.status(error.statusCode ?? 500).json({
         success: false,
         message: error.message || "Internal Server Error",
