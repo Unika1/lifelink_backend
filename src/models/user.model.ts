@@ -9,6 +9,12 @@ const UserSchema:Schema = new Schema <UserType> (
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     imageUrl: { type: String, default: "" },
+    phoneNumber: { type: String, default: "" },
+    bloodGroup: { 
+      type: String, 
+      enum: ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"],
+      default: ""
+    },
     role: {
             type: String,
             enum: ['donor', 'hospital', 'admin'],
