@@ -9,6 +9,7 @@ import {
   SearchHospitalDTO,
 } from "../dtos/hospital.dto.js";
 import { UserRepository } from "../repositories/user.repository.js";
+import bcryptjs from "bcryptjs";
 
 const hospitalRepository = new HospitalRepository();
 const userRepository = new UserRepository();
@@ -30,6 +31,21 @@ export class HospitalService {
       throw new HttpError(403, "Hospital with this email already exists");
     }
 
+    // Check if email already exists in users
+    const existingUser = await userRepository.getUserByEmail(data.email);
+    if (existingUser) {
+      throw new HttpError(403, "Email already in use");
+    }
+
+    // Create User account for hospital staff
+    const hashedPassword = await bcryptjs.hash(data.password, 10);
+    const newUser = await userRepository.createUser({
+      email: data.email,
+      password: hashedPassword,
+      firstName: data.name, // Use hospital name as first name
+      role: "hospital", // Hospital staff has 'hospital' role
+    });
+
     // Initialize empty blood inventory for all blood types
     const initialInventory = [
       "A+",
@@ -48,6 +64,7 @@ export class HospitalService {
 
     const hospitalData = {
       ...data,
+      userId: newUser._id.toString(), // Link hospital to the created user
       bloodInventory: initialInventory as any,
     };
 
