@@ -19,7 +19,9 @@ export class BloodRequestService {
   }
 
   async getRequestById(id: string) {
+    console.log("[BloodRequestService] Getting request by ID:", id);
     const request = await bloodRequestRepository.getRequestById(id);
+    console.log("[BloodRequestService] Found request:", request ? "Yes" : "No");
     if (!request) {
       throw new HttpError(404, "Request not found");
     }
