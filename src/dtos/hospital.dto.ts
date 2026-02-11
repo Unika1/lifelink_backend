@@ -14,6 +14,13 @@ export const CreateHospitalDTO = HospitalSchema.pick({
   licenseNumber: true,
   imageUrl: true,
   userId: true,
+}).extend({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Confirm password is required"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 export type CreateHospitalDTO = z.infer<typeof CreateHospitalDTO>;
