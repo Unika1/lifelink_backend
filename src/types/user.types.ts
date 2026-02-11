@@ -6,6 +6,8 @@ export const UserSchema = z.object({
     email: z.email(),
     password: z.string().min(6),
     imageUrl: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    bloodGroup: z.enum(["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]).optional(),
     role: z.enum(["donor", "hospital", "admin"]).default("donor"),
 });
 
