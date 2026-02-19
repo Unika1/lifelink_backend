@@ -9,32 +9,32 @@ import { BloodRequestService } from "../services/blood-request.service.js";
 
 const bloodRequestService = new BloodRequestService();
 
-export class BloodRequestController {
-  private formatValidationMessage(error: z.ZodError) {
-    const issue = error.issues[0];
-    const field = issue?.path?.[0];
+const formatValidationMessage = (error: z.ZodError) => {
+  const issue = error.issues[0];
+  const field = issue?.path?.[0];
 
-    switch (field) {
-      case "hospitalName":
-        return "Hospital is required";
-      case "patientName":
-        return "Patient name is required";
-      case "bloodType":
-        return "Blood type is required";
-      case "unitsRequested":
-        return "Units needed is required";
-      default:
-        return issue?.message || "Invalid request data";
-    }
+  switch (field) {
+    case "hospitalName":
+      return "Hospital is required";
+    case "patientName":
+      return "Patient name is required";
+    case "bloodType":
+      return "Blood type is required";
+    case "unitsRequested":
+      return "Units needed is required";
+    default:
+      return issue?.message || "Invalid request data";
   }
+};
 
+export class BloodRequestController {
   async createRequest(req: Request, res: Response) {
     try {
       const parsedData = CreateBloodRequestDTO.safeParse(req.body);
       if (!parsedData.success) {
         return res.status(400).json({
           success: false,
-          message: this.formatValidationMessage(parsedData.error),
+          message: formatValidationMessage(parsedData.error),
         });
       }
 
@@ -118,7 +118,7 @@ export class BloodRequestController {
       if (!parsedData.success) {
         return res.status(400).json({
           success: false,
-          message: this.formatValidationMessage(parsedData.error),
+          message: formatValidationMessage(parsedData.error),
         });
       }
 

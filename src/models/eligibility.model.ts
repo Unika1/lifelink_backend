@@ -9,8 +9,8 @@ const EligibilityQuestionnaireSchema: Schema = new Schema<EligibilityQuestionnai
     userId: { type: String, required: true },
     
     // Basic Information
-    age: { type: Number, required: true, min: 18, max: 100 },
-    weight: { type: Number, required: true, min: 40 },
+    age: { type: Number, required: true, min: 18, max: 50 },
+    weight: { type: Number, required: true, min: 40, max: 100 },
     gender: { 
       type: String, 
       enum: ["male", "female", "other"], 

@@ -31,12 +31,17 @@ export class BloodRequestRepository implements IBloodRequestRepository {
   async getAllRequests(criteria?: SearchBloodRequestDTO): Promise<IBloodRequest[]> {
     const query: any = {};
 
-    if (criteria?.hospitalId) {
+    if (criteria?.hospitalId && criteria?.hospitalName) {
+      const escapedHospitalName = criteria.hospitalName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      query.$or = [
+        { hospitalId: criteria.hospitalId },
+        { hospitalName: { $regex: `^${escapedHospitalName}$`, $options: "i" } },
+      ];
+    } else if (criteria?.hospitalId) {
       query.hospitalId = criteria.hospitalId;
-    }
-
-    if (criteria?.hospitalName) {
-      query.hospitalName = criteria.hospitalName;
+    } else if (criteria?.hospitalName) {
+      const escapedHospitalName = criteria.hospitalName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      query.hospitalName = { $regex: `^${escapedHospitalName}$`, $options: "i" };
     }
 
     if (criteria?.requestedBy) {

@@ -45,6 +45,20 @@ export class HospitalController {
         data: newHospital,
       });
     } catch (error: any) {
+      if (error?.name === "ValidationError") {
+        return res.status(400).json({
+          success: false,
+          message: error.message || "Validation failed",
+        });
+      }
+
+      if (error?.code === 11000) {
+        return res.status(409).json({
+          success: false,
+          message: "Email already in use",
+        });
+      }
+
       return res.status(error.statusCode ?? 500).json({
         success: false,
         message: error.message || "Internal Server Error",

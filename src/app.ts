@@ -10,6 +10,7 @@ import adminRoutes from "./routes/admin/admin.routes.js";
 import hospitalRoutes from "./routes/hospital.route.js";
 import eligibilityRoutes from "./routes/eligibility.route.js";
 import bloodRequestRoutes from "./routes/blood-request.route.js";
+import organRequestRoutes from "./routes/organ-request.route.js";
 
 const app: Application = express();
 
@@ -31,6 +32,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/hospitals", hospitalRoutes);
 app.use("/api/eligibility", eligibilityRoutes);
 app.use("/api/requests", bloodRequestRoutes);
+app.use("/api/organ-requests", organRequestRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   return res.status(200).json({

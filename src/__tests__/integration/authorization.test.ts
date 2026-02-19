@@ -2,6 +2,15 @@ import request from 'supertest';
 import bcryptjs from 'bcryptjs';
 import { UserModel } from '../../models/user.model.js';
 import { HospitalModel } from '../../models/hospital.model.js';
+
+jest.mock('../../middlewares/upload.middleware.js', () => ({
+    uploads: {
+        single: () => (req: unknown, res: unknown, next: () => void) => next(),
+        array: () => (req: unknown, res: unknown, next: () => void) => next(),
+        fields: () => (req: unknown, res: unknown, next: () => void) => next(),
+    }
+}));
+
 import app from '../../app.js';
 
 describe(
@@ -46,6 +55,7 @@ describe(
                         adminUser.email,
                         donorUser.email,
                         hospitalUser.email,
+                        'hospital-auth@test.com',
                         'admin-created@test.com',
                         'donor-created@test.com'
                     ] 
@@ -118,6 +128,7 @@ describe(
                         adminUser.email,
                         donorUser.email,
                         hospitalUser.email,
+                        'hospital-auth@test.com',
                         'admin-created@test.com',
                         'donor-created@test.com'
                     ] 
@@ -347,6 +358,9 @@ describe(
                             .send({
                                 name: 'Test Hospital Auth',
                                 email: 'hospital-auth@test.com',
+                                username: 'hospitalauthtest',
+                                password: 'Hospital@1234',
+                                confirmPassword: 'Hospital@1234',
                                 phoneNumber: '1234567890',
                                 address: {
                                     street: '123 Test St',

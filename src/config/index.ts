@@ -14,3 +14,9 @@ export const JWT_SECRET: string =
 
 export const CLIENT_URL: string =
   process.env.CLIENT_URL || "http://localhost:3000";
+
+export const RESET_PASSWORD_URL: string =
+  process.env.RESET_PASSWORD_URL || `${CLIENT_URL}/reset-password`;
+
+export const RESET_PASSWORD_APP_LINK: string =
+  process.env.RESET_PASSWORD_APP_LINK || "lifelink://reset-password";

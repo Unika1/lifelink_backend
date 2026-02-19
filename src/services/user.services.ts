@@ -1,8 +1,13 @@
 import { UserRepository } from "../repositories/user.repository.js";
 import bcryptjs from "bcryptjs";
 import { HttpError } from "../errors/http-error.js";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET, CLIENT_URL } from "../config/index.js";
+import {
+  JWT_SECRET,
+  RESET_PASSWORD_APP_LINK,
+  RESET_PASSWORD_URL,
+} from "../config/index.js";
 import { LoginDTO, RegisterDTO, UpdateUserDTO } from "../dtos/user.dto.js";
 import { sendEmail } from "../config/email.js";
 
@@ -61,6 +66,10 @@ export class UserService {
   }
 
   async updateUser(userId: string, data: UpdateUserDTO) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new HttpError(400, "Invalid user ID");
+    }
+
     const user = await userRepository.getUserById(userId);
     if (!user) {
       throw new HttpError(404, "User not found");
@@ -84,15 +93,22 @@ export class UserService {
     }
     const user = await userRepository.getUserByEmail(email);
     if (!user) {
-      throw new HttpError(404, "User not found");
+      return null;
     }
 
     // Generate JWT token with 1 hour expiry
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
+    const baseResetUrl = RESET_PASSWORD_URL.replace(/\/+$/, "");
+    const resetLink = `${baseResetUrl}?token=${encodeURIComponent(token)}`;
+    const appLinkBase = RESET_PASSWORD_APP_LINK.replace(/\/+$/, "");
+    const appResetLink = `${appLinkBase}?token=${encodeURIComponent(token)}`;
     
-    // Create HTML email
-    const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
+    const html = `
+      <p>Open in app: <a href="${appResetLink}">Reset Password in LifeLink app</a></p>
+      <p>Open in browser: <a href="${resetLink}">Reset Password on Web</a></p>
+      <p>If the link does not open your app or website, copy this token and paste it in the reset screen:</p>
+      <p><b>${token}</b></p>
+    `;
     
     await sendEmail(user.email, "Password Reset Request", html);
     return user;
@@ -129,5 +145,20 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await userRepository.getUserById(userId);
+    if (!user) {
+      throw new HttpError(404, "User not found");
+    }
+
+    const isCurrentPasswordValid = await bcryptjs.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      throw new HttpError(401, "Current password is incorrect");
+    }
+
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    await userRepository.updateUser(userId, { password: hashedPassword });
   }
 }

@@ -14,6 +14,12 @@ router.post("/reset-password/:token", controller.resetPassword);
 
 // Protected routes
 router.put(
+  "/change-password",
+  authorizedMiddleware,
+  controller.changePassword
+);
+
+router.put(
   "/update-profile",
   authorizedMiddleware,
   uploads.single("image"),
@@ -21,6 +27,14 @@ router.put(
 );
 
 // PUT /api/auth/:id - Update user by id with optional image upload
+router.put(
+  "/user/:id",
+  authorizedMiddleware,
+  uploads.single("image"),
+  controller.updateUserById
+);
+
+// Backward compatible route (validated in controller/service)
 router.put(
   "/:id",
   authorizedMiddleware,

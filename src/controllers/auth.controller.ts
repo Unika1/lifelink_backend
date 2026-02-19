@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import z from "zod";
 import { UserService } from "../services/user.services.js";
-import { LoginDTO, RegisterDTO, UpdateUserDTO } from "../dtos/user.dto.js";
+import {
+  ChangePasswordDTO,
+  LoginDTO,
+  RegisterDTO,
+  UpdateUserDTO,
+} from "../dtos/user.dto.js";
 
 const userService = new UserService();
 
@@ -106,6 +112,10 @@ export class AuthController {
         return res.status(400).json({ success: false, message: "User ID is required" });
       }
 
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ success: false, message: "Invalid user ID" });
+      }
+
       const parsedData = UpdateUserDTO.safeParse(req.body);
       if (!parsedData.success) {
         return res.status(400).json({
@@ -139,12 +149,11 @@ export class AuthController {
     try {
       const { email } = req.body;
       
-      const user = await userService.sendResetPasswordEmail(email);
+      await userService.sendResetPasswordEmail(email);
       
       return res.status(200).json({
         success: true,
         message: "If the email is registered, a reset link has been sent.",
-        data: user,
       });
     } catch (error: any) {
       return res.status(error.statusCode ?? 500).json({
@@ -164,6 +173,36 @@ export class AuthController {
       return res.status(200).json({
         success: true,
         message: "Password has been reset successfully.",
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+
+  async changePassword(req: Request, res: Response) {
+    try {
+      const userId = req.user?._id?.toString();
+      if (!userId) {
+        return res.status(400).json({ success: false, message: "User Id not found" });
+      }
+
+      const parsedData = ChangePasswordDTO.safeParse(req.body);
+      if (!parsedData.success) {
+        return res.status(400).json({
+          success: false,
+          message: z.prettifyError(parsedData.error),
+        });
+      }
+
+      const { currentPassword, newPassword } = parsedData.data;
+      await userService.changePassword(userId, currentPassword, newPassword);
+
+      return res.status(200).json({
+        success: true,
+        message: "Password changed successfully",
       });
     } catch (error: any) {
       return res.status(error.statusCode ?? 500).json({

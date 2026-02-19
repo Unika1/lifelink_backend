@@ -13,11 +13,20 @@ export class AdminUserService {
       throw new HttpError(403, "Email already in use");
     }
 
-    // Hash password
+    // Hash password and persist only User model fields
     const hashedPassword = await bcryptjs.hash(data.password, 10);
-    data.password = hashedPassword;
+    const createPayload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: hashedPassword,
+      role: data.role,
+      phoneNumber: data.phoneNumber,
+      bloodGroup: data.bloodGroup,
+      imageUrl: data.imageUrl,
+    };
 
-    const newUser = await userRepository.createUser(data);
+    const newUser = await userRepository.createUser(createPayload as any);
     return newUser;
   }
 

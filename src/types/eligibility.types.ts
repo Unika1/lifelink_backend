@@ -9,7 +9,7 @@ export const EligibilityQuestionnaireSchema = z.object({
   
   // Basic Information
   age: z.number().min(18).max(100),
-  weight: z.number().min(40), // in kg
+  weight: z.number().min(40).max(300), // in kg
   gender: z.enum(["male", "female", "other"]),
   
   // Donation History

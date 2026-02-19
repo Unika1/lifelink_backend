@@ -34,6 +34,26 @@ export const LoginDTO = z.object({
 export type LoginDTO = z.infer<typeof LoginDTO>;
 
 /**
+ * Change Password DTO
+ */
+export const ChangePasswordDTO = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(6, "New password must be at least 6 characters"),
+    confirmNewPassword: z.string().min(6, "Please confirm your new password"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "New passwords do not match",
+    path: ["confirmNewPassword"],
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    message: "New password must be different from current password",
+    path: ["newPassword"],
+  });
+
+export type ChangePasswordDTO = z.infer<typeof ChangePasswordDTO>;
+
+/**
  * Update User DTO
  */
 export const UpdateUserDTO = UserSchema.partial(); // all optional fields
