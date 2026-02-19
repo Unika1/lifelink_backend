@@ -12,6 +12,8 @@ export const AdminCreateUserDTO = z
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm your password"),
     role: z.enum(["donor", "hospital", "admin"]).default("donor"),
+    phoneNumber: z.string().optional(),
+    bloodGroup: z.enum(["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]).optional(),
     imageUrl: z.string().optional(),
   })
   .refine(

@@ -13,7 +13,7 @@ const UserSchema:Schema = new Schema <UserType> (
     bloodGroup: { 
       type: String, 
       enum: ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"],
-      default: ""
+      default: null
     },
     role: {
             type: String,

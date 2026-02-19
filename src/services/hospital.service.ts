@@ -43,6 +43,7 @@ export class HospitalService {
       email: data.email,
       password: hashedPassword,
       firstName: data.name, // Use hospital name as first name
+      lastName: "Hospital", // Default last name for hospital users
       role: "hospital", // Hospital staff has 'hospital' role
     });
 
@@ -63,13 +64,24 @@ export class HospitalService {
     }));
 
     const hospitalData = {
-      ...data,
-      userId: newUser._id.toString(), // Link hospital to the created user
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+      location: data.location,
+      licenseNumber: data.licenseNumber,
+      imageUrl: data.imageUrl,
+      userId: newUser._id.toString(),
       bloodInventory: initialInventory as any,
     };
 
-    const newHospital = await hospitalRepository.createHospital(hospitalData);
-    return newHospital;
+    try {
+      const newHospital = await hospitalRepository.createHospital(hospitalData as any);
+      return newHospital;
+    } catch (error) {
+      await userRepository.deleteUser(newUser._id.toString());
+      throw error;
+    }
   }
 
   /**

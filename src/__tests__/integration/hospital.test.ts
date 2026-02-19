@@ -2,6 +2,15 @@ import request from 'supertest';
 import bcryptjs from 'bcryptjs';
 import { HospitalModel } from '../../models/hospital.model.js';
 import { UserModel } from '../../models/user.model.js';
+
+jest.mock('../../middlewares/upload.middleware.js', () => ({
+    uploads: {
+        single: () => (req: unknown, res: unknown, next: () => void) => next(),
+        array: () => (req: unknown, res: unknown, next: () => void) => next(),
+        fields: () => (req: unknown, res: unknown, next: () => void) => next(),
+    }
+}));
+
 import app from '../../app.js';
 
 describe(
@@ -13,12 +22,15 @@ describe(
             'username': 'adminuser',
             'firstName': 'Admin',
             'lastName': 'User',
-            'role': 'admin'
+            'role': 'hospital'
         }
 
         const testHospital = {
             'name': 'Test Hospital',
             'email': 'hospital@test.com',
+            'username': 'testhospital',
+            'password': 'Hospital@1234',
+            'confirmPassword': 'Hospital@1234',
             'phoneNumber': '1234567890',
             'address': {
                 'street': '123 Test Street',
@@ -34,7 +46,7 @@ describe(
 
         beforeAll(async () => {
             // Clean up existing test data
-            await UserModel.deleteMany({ email: adminUser.email });
+            await UserModel.deleteMany({ email: { $in: [adminUser.email, testHospital.email] } });
             await HospitalModel.deleteMany({ email: testHospital.email });
 
             // Create admin user directly with hashed password, then login
@@ -57,7 +69,7 @@ describe(
 
         afterAll(async () => {
             // Clean up test data
-            await UserModel.deleteMany({ email: adminUser.email });
+            await UserModel.deleteMany({ email: { $in: [adminUser.email, testHospital.email] } });
             await HospitalModel.deleteMany({ email: testHospital.email });
         });
 

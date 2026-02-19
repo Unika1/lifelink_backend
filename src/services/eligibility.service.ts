@@ -97,6 +97,13 @@ export class EligibilityService {
     }
 
     // Rule 2: Weight Check (≥50kg)
+    if (questionnaire.weight > 300) {
+      reasons.push(
+        `Weight appears unrealistic (current: ${questionnaire.weight}kg). Please provide weight in kilograms.`
+      );
+      score -= 40;
+    }
+
     if (questionnaire.weight < 50) {
       reasons.push(`Weight must be at least 50kg (current: ${questionnaire.weight}kg)`);
       score -= 20;

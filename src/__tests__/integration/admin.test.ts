@@ -1,6 +1,15 @@
 import request from 'supertest';
 import bcryptjs from 'bcryptjs';
 import { UserModel } from '../../models/user.model.js';
+
+jest.mock('../../middlewares/upload.middleware.js', () => ({
+    uploads: {
+        single: () => (req: unknown, res: unknown, next: () => void) => next(),
+        array: () => (req: unknown, res: unknown, next: () => void) => next(),
+        fields: () => (req: unknown, res: unknown, next: () => void) => next(),
+    }
+}));
+
 import app from '../../app.js';
 
 describe(
