@@ -1,7 +1,7 @@
-import { UserRepository } from "../../repositories/user.repository.js";
+import { UserRepository } from "../../repositories/user.repository";
 import bcryptjs from "bcryptjs";
-import { HttpError } from "../../errors/http-error.js";
-import { AdminCreateUserDTO, AdminUpdateUserDTO } from "../../dtos/admin.dto.js";
+import { HttpError } from "../../errors/http-error";
+import { AdminCreateUserDTO, AdminUpdateUserDTO } from "../../dtos/admin.dto";
 
 let userRepository = new UserRepository();
 

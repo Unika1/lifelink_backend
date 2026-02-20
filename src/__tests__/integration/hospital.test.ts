@@ -1,9 +1,9 @@
 import request from 'supertest';
 import bcryptjs from 'bcryptjs';
-import { HospitalModel } from '../../models/hospital.model.js';
-import { UserModel } from '../../models/user.model.js';
+import { HospitalModel } from '../../models/hospital.model';
+import { UserModel } from '../../models/user.model';
 
-jest.mock('../../middlewares/upload.middleware.js', () => ({
+jest.mock('../../middlewares/upload.middleware', () => ({
     uploads: {
         single: () => (req: unknown, res: unknown, next: () => void) => next(),
         array: () => (req: unknown, res: unknown, next: () => void) => next(),
@@ -11,7 +11,7 @@ jest.mock('../../middlewares/upload.middleware.js', () => ({
     }
 }));
 
-import app from '../../app.js';
+import app from '../../app';
 
 describe(
     'Hospital Integration Tests', // Test Suite/Group name

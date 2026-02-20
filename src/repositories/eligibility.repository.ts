@@ -1,7 +1,7 @@
 import {
   EligibilityQuestionnaireModel,
   IEligibilityQuestionnaire,
-} from "../models/eligibility.model.js";
+} from "../models/eligibility.model";
 
 export interface IEligibilityRepository {
   submitQuestionnaire(data: Partial<IEligibilityQuestionnaire>): Promise<IEligibilityQuestionnaire>;

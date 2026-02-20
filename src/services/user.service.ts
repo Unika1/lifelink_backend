@@ -1,35 +1,30 @@
-import { UserRepository } from "../repositories/user.repository.js";
+import { UserRepository } from "../repositories/user.repository";
 import bcryptjs from "bcryptjs";
-import { HttpError } from "../errors/http-error.js";
+import { HttpError } from "../errors/http-error";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import {
   JWT_SECRET,
   RESET_PASSWORD_APP_LINK,
   RESET_PASSWORD_URL,
-} from "../config/index.js";
-import { LoginDTO, RegisterDTO, UpdateUserDTO } from "../dtos/user.dto.js";
-import { sendEmail } from "../config/email.js";
+} from "../config/index";
+import { LoginDTO, RegisterDTO, UpdateUserDTO } from "../dtos/user.dto";
+import { sendEmail } from "../config/email";
 
 let userRepository = new UserRepository();
 
 export class UserService {
   async registerUser(data: RegisterDTO) {
-    // Business logic, check duplicate email, hash password
     const checkEmail = await userRepository.getUserByEmail(data.email);
     if (checkEmail) {
       throw new HttpError(403, "Email already in use");
     }
 
-    // Hash/encrypt password, to not store plain text password - security risk
-    const hashedPassword = await bcryptjs.hash(data.password, 10); // 10 - complexity
-    
-    // Remove confirmPassword and add hashed password
+    const hashedPassword = await bcryptjs.hash(data.password, 10);
     const { confirmPassword, ...userData } = data;
-    userData.password = hashedPassword; // Update the password with hashed one
-    
-    const newUser = await userRepository.createUser(userData);
+    userData.password = hashedPassword;
 
+    const newUser = await userRepository.createUser(userData);
     return newUser;
   }
 
@@ -39,20 +34,18 @@ export class UserService {
       throw new HttpError(404, "User not found");
     }
 
-    const isPasswordValid = await bcryptjs.compare(data.password, existingUser.password); // Compare plain text with hashed
+    const isPasswordValid = await bcryptjs.compare(data.password, existingUser.password);
     if (!isPasswordValid) {
       throw new HttpError(401, "Invalid credentials");
     }
 
-    // Generate JWT
     const payload = {
       id: existingUser._id,
       email: existingUser.email,
       role: existingUser.role,
-    }; // What to include in token
+    };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" }); // 30 days expiry
-
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
     return { token, existingUser };
   }
 
@@ -75,7 +68,6 @@ export class UserService {
       throw new HttpError(404, "User not found");
     }
 
-    // Check if email is being updated and if it's already in use
     if (data.email && user.email !== data.email) {
       const emailExists = await userRepository.getUserByEmail(data.email);
       if (emailExists) {
@@ -93,23 +85,22 @@ export class UserService {
     }
     const user = await userRepository.getUserByEmail(email);
     if (!user) {
-      return null;
+      throw new HttpError(404, "User not found");
     }
 
-    // Generate JWT token with 1 hour expiry
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
     const baseResetUrl = RESET_PASSWORD_URL.replace(/\/+$/, "");
     const resetLink = `${baseResetUrl}?token=${encodeURIComponent(token)}`;
     const appLinkBase = RESET_PASSWORD_APP_LINK.replace(/\/+$/, "");
     const appResetLink = `${appLinkBase}?token=${encodeURIComponent(token)}`;
-    
+
     const html = `
       <p>Open in app: <a href="${appResetLink}">Reset Password in LifeLink app</a></p>
       <p>Open in browser: <a href="${resetLink}">Reset Password on Web</a></p>
       <p>If the link does not open your app or website, copy this token and paste it in the reset screen:</p>
       <p><b>${token}</b></p>
     `;
-    
+
     await sendEmail(user.email, "Password Reset Request", html);
     return user;
   }
@@ -120,7 +111,6 @@ export class UserService {
         throw new HttpError(400, "Token and new password are required");
       }
 
-      // Verify JWT token
       const decoded: any = jwt.verify(token, JWT_SECRET);
       const userId = decoded.id;
 
@@ -129,12 +119,9 @@ export class UserService {
         throw new HttpError(404, "User not found");
       }
 
-      // Hash new password
       const hashedPassword = await bcryptjs.hash(newPassword, 10);
-      
-      // Update password in DB
       await userRepository.updateUser(userId, { password: hashedPassword });
-      
+
       return user;
     } catch (error: any) {
       if (error.name === "TokenExpiredError") {

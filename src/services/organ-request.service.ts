@@ -1,10 +1,10 @@
-import { HttpError } from "../errors/http-error.js";
+import { HttpError } from "../errors/http-error";
 import {
   CreateOrganRequestDTO,
   UpdateOrganRequestDTO,
   SearchOrganRequestDTO,
-} from "../dtos/organ-request.dto.js";
-import { OrganRequestRepository } from "../repositories/organ-request.repository.js";
+} from "../dtos/organ-request.dto";
+import { OrganRequestRepository } from "../repositories/organ-request.repository";
 
 const organRequestRepository = new OrganRequestRepository();
 

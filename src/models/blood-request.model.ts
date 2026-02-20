@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { BloodRequestType } from "../types/blood-request.types.js";
+import { BloodRequestType } from "../types/blood-request.types";
 
 const BloodRequestSchema: Schema = new Schema<BloodRequestType>(
   {

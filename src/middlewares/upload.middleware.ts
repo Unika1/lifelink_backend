@@ -2,13 +2,10 @@ import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
-import { fileURLToPath } from "url";
 
 // Ensure the uploads directory exists
-// Use __dirname like 35A, but keep it safe for ESM
-const moduleDir = typeof __dirname !== "undefined"
-  ? __dirname
-  : path.dirname(fileURLToPath(import.meta.url));
+// Use __dirname in CommonJS mode
+const moduleDir = __dirname;
 const uploadDir = path.join(moduleDir, "../../uploads");
 
 if (!fs.existsSync(uploadDir)) {

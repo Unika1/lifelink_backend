@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { BloodRequestController } from "../controllers/blood-request.controller.js";
-import { authorizedMiddleware } from "../middlewares/auth.middleware.js";
+import { BloodRequestController } from "../controllers/blood-request.controller";
+import { authorizedMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 const controller = new BloodRequestController();

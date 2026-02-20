@@ -1,7 +1,7 @@
-import { EligibilityRepository } from "../repositories/eligibility.repository.js";
-import { SubmitEligibilityDTO } from "../dtos/eligibility.dto.js";
-import { HttpError } from "../errors/http-error.js";
-import { IEligibilityQuestionnaire } from "../models/eligibility.model.js";
+import { EligibilityRepository } from "../repositories/eligibility.repository";
+import { SubmitEligibilityDTO } from "../dtos/eligibility.dto";
+import { HttpError } from "../errors/http-error";
+import { IEligibilityQuestionnaire } from "../models/eligibility.model";
 
 const eligibilityRepository = new EligibilityRepository();
 

@@ -1,6 +1,6 @@
-import app from "./app.js";
-import { PORT } from "./config/index.js";
-import { connectDatabase } from "./database/mongodb.js";
+import app from "./app";
+import { PORT } from "./config/index";
+import { connectDatabase } from "./database/mongodb";
 
 async function startServer() {
   await connectDatabase();

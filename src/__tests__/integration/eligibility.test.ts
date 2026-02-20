@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { UserModel } from '../../models/user.model.js';
-import { EligibilityQuestionnaireModel } from '../../models/eligibility.model.js';
+import { UserModel } from '../../models/user.model';
+import { EligibilityQuestionnaireModel } from '../../models/eligibility.model';
 
-jest.mock('../../middlewares/upload.middleware.js', () => ({
+jest.mock('../../middlewares/upload.middleware', () => ({
     uploads: {
         single: () => (req: unknown, res: unknown, next: () => void) => next(),
         array: () => (req: unknown, res: unknown, next: () => void) => next(),
@@ -10,7 +10,7 @@ jest.mock('../../middlewares/upload.middleware.js', () => ({
     }
 }));
 
-import app from '../../app.js';
+import app from '../../app';
 
 describe('Eligibility Integration Tests', () => {
     const donorUser = {

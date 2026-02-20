@@ -1,10 +1,10 @@
-import { HttpError } from "../errors/http-error.js";
+import { HttpError } from "../errors/http-error";
 import {
   CreateBloodRequestDTO,
   UpdateBloodRequestDTO,
   SearchBloodRequestDTO,
-} from "../dtos/blood-request.dto.js";
-import { BloodRequestRepository } from "../repositories/blood-request.repository.js";
+} from "../dtos/blood-request.dto";
+import { BloodRequestRepository } from "../repositories/blood-request.repository";
 
 const bloodRequestRepository = new BloodRequestRepository();
 
@@ -19,9 +19,7 @@ export class BloodRequestService {
   }
 
   async getRequestById(id: string) {
-    console.log("[BloodRequestService] Getting request by ID:", id);
     const request = await bloodRequestRepository.getRequestById(id);
-    console.log("[BloodRequestService] Found request:", request ? "Yes" : "No");
     if (!request) {
       throw new HttpError(404, "Request not found");
     }

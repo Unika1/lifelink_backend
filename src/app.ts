@@ -3,14 +3,14 @@ import bodyParser from "body-parser";
 import path from "path";
 import cors from "cors";
 
-import { connectDatabase } from "./database/mongodb.js";
-import { PORT } from "./config/index.js";
-import authRoutes from "./routes/auth.routes.js";
-import adminRoutes from "./routes/admin/admin.routes.js";
-import hospitalRoutes from "./routes/hospital.route.js";
-import eligibilityRoutes from "./routes/eligibility.route.js";
-import bloodRequestRoutes from "./routes/blood-request.route.js";
-import organRequestRoutes from "./routes/organ-request.route.js";
+import { connectDatabase } from "./database/mongodb";
+import { PORT } from "./config/index";
+import authRoutes from "./routes/auth.routes";
+import adminRoutes from "./routes/admin/admin.routes";
+import hospitalRoutes from "./routes/hospital.route";
+import eligibilityRoutes from "./routes/eligibility.route";
+import bloodRequestRoutes from "./routes/blood-request.route";
+import organRequestRoutes from "./routes/organ-request.route";
 
 const app: Application = express();
 

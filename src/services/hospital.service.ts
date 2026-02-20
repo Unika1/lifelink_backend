@@ -1,5 +1,5 @@
-import { HospitalRepository } from "../repositories/hospital.repository.js";
-import { HttpError } from "../errors/http-error.js";
+import { HospitalRepository } from "../repositories/hospital.repository";
+import { HttpError } from "../errors/http-error";
 import {
   CreateHospitalDTO,
   UpdateHospitalDTO,
@@ -7,8 +7,8 @@ import {
   CreateBloodInventoryDTO,
   DeleteBloodInventoryDTO,
   SearchHospitalDTO,
-} from "../dtos/hospital.dto.js";
-import { UserRepository } from "../repositories/user.repository.js";
+} from "../dtos/hospital.dto";
+import { UserRepository } from "../repositories/user.repository";
 import bcryptjs from "bcryptjs";
 
 const hospitalRepository = new HospitalRepository();

@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { OrganRequestType } from "../types/organ-request.types.js";
+import { OrganRequestType } from "../types/organ-request.types";
 
 const OrganRequestSchema: Schema = new Schema<OrganRequestType>(
   {

@@ -1,5 +1,5 @@
 import z from "zod";
-import { UserSchema } from "../types/user.types.js";
+import { UserSchema } from "../types/user.types";
 
 /**
  * Create User by Admin DTO - For admin to create users

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import z from "zod";
-import { HospitalService } from "../services/hospital.service.js";
+import { HospitalService } from "../services/hospital.service";
 import {
   CreateHospitalDTO,
   UpdateHospitalDTO,
@@ -8,7 +8,7 @@ import {
   CreateBloodInventoryDTO,
   DeleteBloodInventoryDTO,
   SearchHospitalDTO,
-} from "../dtos/hospital.dto.js";
+} from "../dtos/hospital.dto";
 
 const hospitalService = new HospitalService();
 

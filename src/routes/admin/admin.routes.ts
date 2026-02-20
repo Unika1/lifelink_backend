@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { AdminController } from "../../controllers/admin/admin.controller.js";
-import { authorizedMiddleware } from "../../middlewares/auth.middleware.js";
-import { adminMiddleware } from "../../middlewares/admin.middleware.js";
-import { uploads } from "../../middlewares/upload.middleware.js";
+import { AdminController } from "../../controllers/admin/admin.controller";
+import { authorizedMiddleware } from "../../middlewares/auth.middleware";
+import { adminMiddleware } from "../../middlewares/admin.middleware";
+import { uploads } from "../../middlewares/upload.middleware";
 
 const router = Router();
 const controller = new AdminController();

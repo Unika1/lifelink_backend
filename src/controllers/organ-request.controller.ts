@@ -4,8 +4,8 @@ import {
   CreateOrganRequestDTO,
   UpdateOrganRequestDTO,
   SearchOrganRequestDTO,
-} from "../dtos/organ-request.dto.js";
-import { OrganRequestService } from "../services/organ-request.service.js";
+} from "../dtos/organ-request.dto";
+import { OrganRequestService } from "../services/organ-request.service";
 
 const organRequestService = new OrganRequestService();
 

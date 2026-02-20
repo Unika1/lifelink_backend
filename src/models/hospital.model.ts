@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { HospitalType, BloodInventory } from "../types/hospital.types.js";
+import { HospitalType, BloodInventory } from "../types/hospital.types";
 
 /**
  * Blood Inventory Sub-Schema

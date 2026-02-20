@@ -1,5 +1,5 @@
-import { BloodRequestModel, IBloodRequest } from "../models/blood-request.model.js";
-import { SearchBloodRequestDTO } from "../dtos/blood-request.dto.js";
+import { BloodRequestModel, IBloodRequest } from "../models/blood-request.model";
+import { SearchBloodRequestDTO } from "../dtos/blood-request.dto";
 import mongoose from "mongoose";
 
 export interface IBloodRequestRepository {

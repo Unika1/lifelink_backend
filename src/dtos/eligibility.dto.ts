@@ -1,5 +1,5 @@
 import z from "zod";
-import { EligibilityQuestionnaireSchema, EligibilityResultSchema } from "../types/eligibility.types.js";
+import { EligibilityQuestionnaireSchema, EligibilityResultSchema } from "../types/eligibility.types";
 
 /**
  * Submit Eligibility Questionnaire DTO

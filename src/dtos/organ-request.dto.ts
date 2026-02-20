@@ -1,5 +1,5 @@
 import z from "zod";
-import { OrganRequestSchema } from "../types/organ-request.types.js";
+import { OrganRequestSchema } from "../types/organ-request.types";
 
 const startOfToday = () => {
   const today = new Date();

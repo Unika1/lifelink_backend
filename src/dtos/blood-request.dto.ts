@@ -1,5 +1,5 @@
 import z from "zod";
-import { BloodRequestSchema } from "../types/blood-request.types.js";
+import { BloodRequestSchema } from "../types/blood-request.types";
 
 const startOfToday = () => {
   const today = new Date();

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { OrganRequestModel, IOrganRequest } from "../models/organ-request.model.js";
-import { SearchOrganRequestDTO } from "../dtos/organ-request.dto.js";
+import { OrganRequestModel, IOrganRequest } from "../models/organ-request.model";
+import { SearchOrganRequestDTO } from "../dtos/organ-request.dto";
 
 export interface IOrganRequestRepository {
   createRequest(data: Partial<IOrganRequest>): Promise<IOrganRequest>;

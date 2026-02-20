@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { HospitalController } from "../controllers/hospital.controller.js";
-import { authorizedMiddleware } from "../middlewares/auth.middleware.js";
-import { adminMiddleware } from "../middlewares/admin.middleware.js";
-import { uploads } from "../middlewares/upload.middleware.js";
+import { HospitalController } from "../controllers/hospital.controller";
+import { authorizedMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
+import { uploads } from "../middlewares/upload.middleware";
 
 const router = Router();
 const hospitalController = new HospitalController();

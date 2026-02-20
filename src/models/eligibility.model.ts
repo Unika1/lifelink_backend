@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { EligibilityQuestionnaireType } from "../types/eligibility.types.js";
+import { EligibilityQuestionnaireType } from "../types/eligibility.types";
 
 /**
  * Eligibility Questionnaire Schema

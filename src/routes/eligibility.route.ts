@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { EligibilityController } from "../controllers/eligibility.controller.js";
-import { authorizedMiddleware, hospitalOrAdminMiddleware } from "../middlewares/auth.middleware.js";
-import { adminMiddleware } from "../middlewares/admin.middleware.js";
+import { EligibilityController } from "../controllers/eligibility.controller";
+import { authorizedMiddleware, hospitalOrAdminMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
 
 const router = Router();
 const eligibilityController = new EligibilityController();

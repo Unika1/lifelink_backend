@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import z from "zod";
-import { AdminUserService } from "../../services/admin/admin.service.js";
-import { AdminCreateUserDTO, AdminUpdateUserDTO } from "../../dtos/admin.dto.js";
+import { AdminUserService } from "../../services/admin/admin.service";
+import { AdminCreateUserDTO, AdminUpdateUserDTO } from "../../dtos/admin.dto";
 
 let adminUserService = new AdminUserService();
 

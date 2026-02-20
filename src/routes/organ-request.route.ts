@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { OrganRequestController } from "../controllers/organ-request.controller.js";
-import { authorizedMiddleware } from "../middlewares/auth.middleware.js";
-import { uploads } from "../middlewares/upload.middleware.js";
+import { OrganRequestController } from "../controllers/organ-request.controller";
+import { authorizedMiddleware } from "../middlewares/auth.middleware";
+import { uploads } from "../middlewares/upload.middleware";
 
 const router = Router();
 const controller = new OrganRequestController();

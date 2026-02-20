@@ -4,8 +4,8 @@ import {
   CreateBloodRequestDTO,
   UpdateBloodRequestDTO,
   SearchBloodRequestDTO,
-} from "../dtos/blood-request.dto.js";
-import { BloodRequestService } from "../services/blood-request.service.js";
+} from "../dtos/blood-request.dto";
+import { BloodRequestService } from "../services/blood-request.service";
 
 const bloodRequestService = new BloodRequestService();
 

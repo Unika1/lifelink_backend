@@ -1,5 +1,5 @@
 import z from "zod";
-import { HospitalSchema, BloodInventorySchema } from "../types/hospital.types.js";
+import { HospitalSchema, BloodInventorySchema } from "../types/hospital.types";
 
 /**
  * Create Hospital DTO

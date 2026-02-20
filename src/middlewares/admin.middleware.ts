@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { HttpError } from "../errors/http-error.js";
+import { HttpError } from "../errors/http-error";
 
 /**
  * Admin Middleware - Check if user is admin
@@ -16,12 +16,6 @@ export const adminMiddleware = (
     if (!user) {
       throw new HttpError(401, "Unauthorized, User not found");
     }
-
-    console.log("[admin] user", {
-      id: (user as any)._id?.toString?.() || (user as any)._id,
-      role: (user as any).role,
-      email: (user as any).email,
-    });
 
     if (user.role !== "admin") {
       throw new HttpError(

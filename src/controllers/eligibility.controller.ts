@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import z from "zod";
-import { EligibilityService } from "../services/eligibility.service.js";
-import { SubmitEligibilityDTO } from "../dtos/eligibility.dto.js";
+import { EligibilityService } from "../services/eligibility.service";
+import { SubmitEligibilityDTO } from "../dtos/eligibility.dto";
 
 const eligibilityService = new EligibilityService();
 

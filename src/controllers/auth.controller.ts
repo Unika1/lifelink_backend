@@ -1,20 +1,18 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import z from "zod";
-import { UserService } from "../services/user.services.js";
+import { UserService } from "../services/user.service";
 import {
   ChangePasswordDTO,
   LoginDTO,
   RegisterDTO,
   UpdateUserDTO,
-} from "../dtos/user.dto.js";
+} from "../dtos/user.dto";
 
 const userService = new UserService();
 
 export class AuthController {
   async register(req: Request, res: Response) {
-    console.log("REGISTER HIT");
-    console.log("BODY:", req.body);
     try {
       const parsedData = RegisterDTO.safeParse(req.body);
 

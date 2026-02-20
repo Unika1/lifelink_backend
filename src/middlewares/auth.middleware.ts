@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/index.js";
+import { JWT_SECRET } from "../config/index";
 import { Request, Response, NextFunction } from "express";
-import { HttpError } from "../errors/http-error.js";
-import { UserRepository } from "../repositories/user.repository.js";
-import { IUser } from "../models/user.model.js";
+import { HttpError } from "../errors/http-error";
+import { UserRepository } from "../repositories/user.repository";
+import { IUser } from "../models/user.model";
 
 // global augmentation for Express Request to include user property
 declare global {
@@ -45,12 +45,6 @@ export const authorizedMiddleware = async (
     if (!user) {
       throw new HttpError(401, "Unauthorized, User not found");
     }
-
-    console.log("[auth] user", {
-      id: (user as any)._id?.toString?.() || (user as any)._id,
-      role: (user as any).role,
-      email: (user as any).email,
-    });
 
     // attach user to request object
     req.user = user;

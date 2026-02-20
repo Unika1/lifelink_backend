@@ -1,5 +1,5 @@
-import { HospitalModel, IHospital } from "../models/hospital.model.js";
-import { SearchHospitalDTO } from "../dtos/hospital.dto.js";
+import { HospitalModel, IHospital } from "../models/hospital.model";
+import { SearchHospitalDTO } from "../dtos/hospital.dto";
 
 export interface IHospitalRepository {
   createHospital(data: Partial<IHospital>): Promise<IHospital>;

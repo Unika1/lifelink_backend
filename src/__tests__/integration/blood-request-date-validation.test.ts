@@ -1,9 +1,9 @@
 import request from 'supertest';
 import bcryptjs from 'bcryptjs';
-import { UserModel } from '../../models/user.model.js';
-import { BloodRequestModel } from '../../models/blood-request.model.js';
+import { UserModel } from '../../models/user.model';
+import { BloodRequestModel } from '../../models/blood-request.model';
 
-jest.mock('../../middlewares/upload.middleware.js', () => ({
+jest.mock('../../middlewares/upload.middleware', () => ({
     uploads: {
         single: () => (req: unknown, res: unknown, next: () => void) => next(),
         array: () => (req: unknown, res: unknown, next: () => void) => next(),
@@ -11,7 +11,7 @@ jest.mock('../../middlewares/upload.middleware.js', () => ({
     }
 }));
 
-import app from '../../app.js';
+import app from '../../app';
 
 describe('Blood Request Date Validation Integration Tests', () => {
     const adminUser = {
