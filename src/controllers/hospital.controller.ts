@@ -352,11 +352,17 @@ export class HospitalController {
 
   /**
    * GET /api/hospitals/donors
-   * Get all donors
+   * Get all donors, optionally filtered by hospital
    */
   async getAllDonors(req: Request, res: Response) {
     try {
-      const donors = await hospitalService.getAllDonors();
+      const { hospitalId, hospitalName } = req.query;
+      
+      const donors = await hospitalService.getAllDonors(
+        hospitalId as string | undefined,
+        hospitalName as string | undefined
+      );
+      
       return res.status(200).json({
         success: true,
         data: donors,

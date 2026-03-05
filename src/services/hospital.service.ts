@@ -9,10 +9,14 @@ import {
   SearchHospitalDTO,
 } from "../dtos/hospital.dto";
 import { UserRepository } from "../repositories/user.repository";
+import { BloodRequestRepository } from "../repositories/blood-request.repository";
+import { OrganRequestRepository } from "../repositories/organ-request.repository";
 import bcryptjs from "bcryptjs";
 
 const hospitalRepository = new HospitalRepository();
 const userRepository = new UserRepository();
+const bloodRequestRepository = new BloodRequestRepository();
+const organRequestRepository = new OrganRequestRepository();
 
 /**
  * Hospital Service - Business Logic Layer
@@ -237,9 +241,52 @@ export class HospitalService {
   }
 
   /**
-   * Get all donors (role=donor)
+   * Get all donors (role=donor), optionally filtered by hospital
    */
-  async getAllDonors() {
-    return await userRepository.getUsersByRole("donor");
+  async getAllDonors(hospitalId?: string, hospitalName?: string) {
+    // If no hospital filter is provided, return all donors
+    if (!hospitalId && !hospitalName) {
+      return await userRepository.getUsersByRole("donor");
+    }
+
+    // Get blood requests for this hospital to find donors
+    const bloodRequests = await bloodRequestRepository.getAllRequests({
+      hospitalId,
+      hospitalName,
+    });
+
+    // Get organ requests for this hospital to find donors
+    const organRequests = await organRequestRepository.getAllRequests({
+      hospitalId,
+      hospitalName,
+    });
+
+    // Extract unique donor IDs from requests
+    const donorIds = new Set<string>();
+    
+    bloodRequests.forEach((request) => {
+      if (request.requestedBy) {
+        donorIds.add(request.requestedBy);
+      }
+    });
+
+    organRequests.forEach((request) => {
+      if (request.requestedBy) {
+        donorIds.add(request.requestedBy);
+      }
+    });
+
+    // If no donors found for this hospital, return empty array
+    if (donorIds.size === 0) {
+      return [];
+    }
+
+    // Fetch all the donor users
+    const donors = await Promise.all(
+      Array.from(donorIds).map((id) => userRepository.getUserById(id))
+    );
+
+    // Filter out any null values and ensure they have donor role
+    return donors.filter((donor) => donor && donor.role === "donor");
   }
 }

@@ -28,19 +28,32 @@ export class OrganRequestController {
       }
 
       const requesterId = req.user?._id?.toString();
+      const reportPath = `/uploads/${req.file.filename}`;
+      console.log(`[OrganRequest] Creating request with file: ${req.file.originalname} -> ${reportPath}`);
+      
       const payload: CreateOrganRequestDTO = {
         ...parsedData.data,
         requestedBy: parsedData.data.requestedBy ?? requesterId,
-        reportUrl: `/uploads/${req.file.filename}`,
+        reportUrl: reportPath,
       };
 
+      console.log(`[OrganRequest] Payload before save:`, {
+        hospitalName: payload.hospitalName,
+        donorName: payload.donorName,
+        reportUrl: payload.reportUrl,
+      });
+
       const request = await organRequestService.createRequest(payload);
+      
+      console.log(`[OrganRequest] Created successfully with ID ${request._id}, reportUrl: ${request.reportUrl}`);
+      
       return res.status(201).json({
         success: true,
         message: "Organ donation request created successfully",
         data: request,
       });
     } catch (error: any) {
+      console.error(`[OrganRequest] Creation error:`, error);
       return res.status(error.statusCode ?? 500).json({
         success: false,
         message: error.message || "Internal Server Error",
@@ -111,19 +124,27 @@ export class OrganRequestController {
 
       const dataToUpdate: UpdateOrganRequestDTO = { ...parsedData.data };
       if (req.file) {
-        dataToUpdate.reportUrl = `/uploads/${req.file.filename}`;
+        const reportPath = `/uploads/${req.file.filename}`;
+        dataToUpdate.reportUrl = reportPath;
+        console.log(`[OrganRequest] Updating request ${requestId} with file: ${req.file.originalname} -> ${reportPath}`);
+      } else {
+        console.log(`[OrganRequest] Updating request ${requestId} without file. Fields:`, Object.keys(dataToUpdate));
       }
 
       const updated = await organRequestService.updateRequest(
         requestId,
         dataToUpdate
       );
+      
+      console.log(`[OrganRequest] Updated successfully. New reportUrl: ${updated.reportUrl}`);
+      
       return res.status(200).json({
         success: true,
         message: "Request updated successfully",
         data: updated,
       });
     } catch (error: any) {
+      console.error(`[OrganRequest] Update error:`, error);
       return res.status(error.statusCode ?? 500).json({
         success: false,
         message: error.message || "Internal Server Error",
