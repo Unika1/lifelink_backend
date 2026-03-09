@@ -7,9 +7,9 @@ import {
 import { HttpError } from "../../../errors/http-error";
 
 /**
- * UNIT TEST FOR OrganRequestService (with Nepalese donor names)
+ * UNIT TEST FOR OrganRequestService 
  * 
- * Comprehensive tests using authentic Nepalese donor and hospital names.
+ * Comprehensive tests for organ request management.
  */
 
 describe("OrganRequestService - Unit Tests", () => {

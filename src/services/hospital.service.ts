@@ -18,10 +18,6 @@ const userRepository = new UserRepository();
 const bloodRequestRepository = new BloodRequestRepository();
 const organRequestRepository = new OrganRequestRepository();
 
-/**
- * Hospital Service - Business Logic Layer
- * Handles all hospital-related operations
- */
 export class HospitalService {
   /**
    * Create a new hospital
@@ -290,3 +286,4 @@ export class HospitalService {
     return donors.filter((donor) => donor && donor.role === "donor");
   }
 }
+

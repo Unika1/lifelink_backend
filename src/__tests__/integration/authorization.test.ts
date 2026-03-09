@@ -14,8 +14,8 @@ jest.mock('../../middlewares/upload.middleware', () => ({
 import app from '../../app';
 
 describe(
-    'Authorization & Role-Based Access Tests', // Test Suite/Group name
-    () => { // Test Suite function
+    'Authorization & Role-Based Access Tests',
+    () => {
         const adminUser = {
             'email': 'admin@auth-test.com',
             'password': 'Admin@1234',
@@ -141,42 +141,38 @@ describe(
         });
 
         describe(
-            'Token Validation', // Test Case name
-            () => { // Test Case function
+            'Token Validation',
+            () => {
                 test(
-                    'should reject requests without token to protected routes', // Test name
-                    async () => { // Test function
+                    'should reject requests without token to protected routes',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .send({
                                 firstName: 'Test'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(401);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should reject requests with invalid token', // Test name
-                    async () => { // Test function
+                    'should reject requests with invalid token',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .set('Authorization', 'Bearer invalid-token-12345')
                             .send({
                                 firstName: 'Test'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(401);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should reject requests with expired token', // Test name
-                    async () => { // Test function
+                    'should reject requests with expired token',
+                    async () => {
                         const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OTAiLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj0vPnz8H8QCFJ5TqvvnYqLkpgKe_xB4vBqGxVCk';
                         
                         const response = await request(app)
@@ -185,16 +181,14 @@ describe(
                             .send({
                                 firstName: 'Test'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(401);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should accept requests with valid admin token', // Test name
-                    async () => { // Test function
+                    'should accept requests with valid admin token',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .set('Authorization', `Bearer ${adminToken}`)
@@ -202,16 +196,14 @@ describe(
                                 firstName: 'UpdatedAdmin',
                                 role: 'admin'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
                 )
 
                 test(
-                    'should accept requests with valid donor token', // Test name
-                    async () => { // Test function
+                    'should accept requests with valid donor token',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .set('Authorization', `Bearer ${donorToken}`)
@@ -219,16 +211,14 @@ describe(
                                 firstName: 'UpdatedDonor',
                                 role: 'donor'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
                 )
 
                 test(
-                    'should accept requests with valid hospital token', // Test name
-                    async () => { // Test function
+                    'should accept requests with valid hospital token',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .set('Authorization', `Bearer ${hospitalToken}`)
@@ -236,8 +226,6 @@ describe(
                                 firstName: 'UpdatedHospital',
                                 role: 'hospital'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
@@ -246,54 +234,46 @@ describe(
         )
 
         describe(
-            'Admin-Only Route Protection', // Test Case name
-            () => { // Test Case function
+            'Admin-Only Route Protection',
+            () => {
                 test(
-                    'should allow admin to access admin routes', // Test name
-                    async () => { // Test function
+                    'should allow admin to access admin routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/admin/users')
                             .set('Authorization', `Bearer ${adminToken}`)
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
                 )
 
                 test(
-                    'should deny donor access to admin routes', // Test name
-                    async () => { // Test function
+                    'should deny donor access to admin routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/admin/users')
                             .set('Authorization', `Bearer ${donorToken}`)
-                        
-                        // Validate response structure
                         expect(response.status).toBe(403);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should deny hospital access to admin routes', // Test name
-                    async () => { // Test function
+                    'should deny hospital access to admin routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/admin/users')
                             .set('Authorization', `Bearer ${hospitalToken}`)
-                        
-                        // Validate response structure
                         expect(response.status).toBe(403);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should deny unauthenticated access to admin routes', // Test name
-                    async () => { // Test function
+                    'should deny unauthenticated access to admin routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/admin/users')
-                        
-                        // Validate response structure
                         expect(response.status).toBe(401);
                         expect(response.body).toHaveProperty('message');
                     }
@@ -302,43 +282,37 @@ describe(
         )
 
         describe(
-            'Public vs Protected Route Access', // Test Case name
-            () => { // Test Case function
+            'Public vs Protected Route Access',
+            () => {
                 test(
-                    'should allow unauthenticated access to public routes', // Test name
-                    async () => { // Test function
+                    'should allow unauthenticated access to public routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/hospitals')
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
                 )
 
                 test(
-                    'should allow authenticated users to access public routes', // Test name
-                    async () => { // Test function
+                    'should allow authenticated users to access public routes',
+                    async () => {
                         const response = await request(app)
                             .get('/api/hospitals')
                             .set('Authorization', `Bearer ${donorToken}`)
-                        
-                        // Validate response structure
                         expect(response.status).toBe(200);
                         expect(response.body).toHaveProperty('data');
                     }
                 )
 
                 test(
-                    'should deny unauthenticated access to protected update routes', // Test name
-                    async () => { // Test function
+                    'should deny unauthenticated access to protected update routes',
+                    async () => {
                         const response = await request(app)
                             .put('/api/auth/update-profile')
                             .send({
                                 firstName: 'Test'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(401);
                         expect(response.body).toHaveProperty('message');
                     }
@@ -347,11 +321,11 @@ describe(
         )
 
         describe(
-            'Role-Based Resource Creation', // Test Case name
-            () => { // Test Case function
+            'Role-Based Resource Creation',
+            () => {
                 test(
-                    'should allow admin to create hospitals', // Test name
-                    async () => { // Test function
+                    'should allow admin to create hospitals',
+                    async () => {
                         const response = await request(app)
                             .post('/api/hospitals')
                             .set('Authorization', `Bearer ${adminToken}`)
@@ -370,8 +344,6 @@ describe(
                                     country: 'Nepal'
                                 }
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(201);
                         expect(response.body).toHaveProperty('message');
                         expect(response.body).toHaveProperty('data');
@@ -379,8 +351,8 @@ describe(
                 )
 
                 test(
-                    'should deny donor from creating hospitals', // Test name
-                    async () => { // Test function
+                    'should deny donor from creating hospitals',
+                    async () => {
                         const response = await request(app)
                             .post('/api/hospitals')
                             .set('Authorization', `Bearer ${donorToken}`)
@@ -396,16 +368,14 @@ describe(
                                     country: 'Nepal'
                                 }
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(403);
                         expect(response.body).toHaveProperty('message');
                     }
                 )
 
                 test(
-                    'should allow admin to create users', // Test name
-                    async () => { // Test function
+                    'should allow admin to create users',
+                    async () => {
                         const response = await request(app)
                             .post('/api/admin/users')
                             .set('Authorization', `Bearer ${adminToken}`)
@@ -418,8 +388,6 @@ describe(
                                 lastName: 'Created',
                                 role: 'donor'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(201);
                         expect(response.body).toHaveProperty('message');
                         expect(response.body).toHaveProperty('data');
@@ -427,8 +395,8 @@ describe(
                 )
 
                 test(
-                    'should deny donor from creating users', // Test name
-                    async () => { // Test function
+                    'should deny donor from creating users',
+                    async () => {
                         const response = await request(app)
                             .post('/api/admin/users')
                             .set('Authorization', `Bearer ${donorToken}`)
@@ -440,8 +408,6 @@ describe(
                                 lastName: 'Created',
                                 role: 'donor'
                             })
-                        
-                        // Validate response structure
                         expect(response.status).toBe(403);
                         expect(response.body).toHaveProperty('message');
                     }
@@ -450,3 +416,4 @@ describe(
         )
     }
 )
+

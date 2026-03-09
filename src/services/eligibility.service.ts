@@ -5,10 +5,6 @@ import { IEligibilityQuestionnaire } from "../models/eligibility.model";
 
 const eligibilityRepository = new EligibilityRepository();
 
-/**
- * Eligibility Service - Business Logic Layer
- * Contains rules engine for donor eligibility assessment
- */
 export class EligibilityService {
   /**
    * Submit eligibility questionnaire
@@ -89,14 +85,10 @@ export class EligibilityService {
     const reasons: string[] = [];
     let score = 100; // Start with full score
     const today = new Date();
-
-    // Rule 1: Age Check (18-65)
     if (questionnaire.age < 18 || questionnaire.age > 65) {
       reasons.push(`Age must be between 18-65 years (current: ${questionnaire.age})`);
       score -= 20;
     }
-
-    // Rule 2: Weight Check (≥50kg)
     if (questionnaire.weight > 300) {
       reasons.push(
         `Weight appears unrealistic (current: ${questionnaire.weight}kg). Please provide weight in kilograms.`
@@ -108,8 +100,6 @@ export class EligibilityService {
       reasons.push(`Weight must be at least 50kg (current: ${questionnaire.weight}kg)`);
       score -= 20;
     }
-
-    // Rule 3: Last Donation (>56 days = 8 weeks)
     if (questionnaire.lastDonationDate) {
       const daysSinceDonation = Math.floor(
         (today.getTime() - questionnaire.lastDonationDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -135,8 +125,6 @@ export class EligibilityService {
         };
       }
     }
-
-    // Rule 4: Serious Health Conditions
     if (questionnaire.hasHIV || questionnaire.hasHepatitis) {
       reasons.push("HIV or Hepatitis positive - cannot donate");
       score -= 30;
@@ -146,16 +134,12 @@ export class EligibilityService {
       reasons.push("Active cancer diagnosis - cannot donate");
       score -= 30;
     }
-
-    // Rule 5: Infectious Disease
     if (questionnaire.activeInfection) {
       reasons.push(
         `Active infection detected: ${questionnaire.infectionDetails || "Unspecified"}. Must wait until recovered.`
       );
       score -= 25;
     }
-
-    // Rule 6: Tattoo/Piercing (12 months wait)
     if (questionnaire.hasRecentTattoo && questionnaire.tattooDate) {
       const daysSinceTattoo = Math.floor(
         (today.getTime() - questionnaire.tattooDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -179,8 +163,6 @@ export class EligibilityService {
         score -= 15;
       }
     }
-
-    // Rule 7: Gender-Specific (Pregnancy, Breastfeeding)
     if (questionnaire.isPregnant) {
       reasons.push("Currently pregnant - cannot donate");
       score -= 30;
@@ -190,8 +172,6 @@ export class EligibilityService {
       reasons.push("Currently breastfeeding - cannot donate");
       score -= 20;
     }
-
-    // Rule 8: Blood Transfusion History (12 months wait)
     if (questionnaire.hadBloodTransfusion && questionnaire.transfusionDate) {
       const daysSinceTransfusion = Math.floor(
         (today.getTime() - questionnaire.transfusionDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -205,8 +185,6 @@ export class EligibilityService {
         score -= 20;
       }
     }
-
-    // Rule 9: Recent Travel (some countries have restrictions)
     if (questionnaire.recentTravel) {
       const restrictedCountries = ["Africa", "South America"]; // Example
       const hasRestrictedTravel = questionnaire.travelCountries?.some((country) =>
@@ -218,8 +196,6 @@ export class EligibilityService {
         score -= 15;
       }
     }
-
-    // Rule 10: Medical Conditions (Minor)
     if (questionnaire.hasBloodPressure) {
       reasons.push("High blood pressure - requires doctor's clearance");
       score -= 10;
@@ -229,8 +205,6 @@ export class EligibilityService {
       reasons.push("Diabetes - must be well-controlled, requires documentation");
       score -= 10;
     }
-
-    // Final Assessment
     const eligible = score >= 70 && reasons.length === 0;
 
     return {
@@ -244,3 +218,4 @@ export class EligibilityService {
     };
   }
 }
+

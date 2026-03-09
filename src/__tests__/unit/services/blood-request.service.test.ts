@@ -7,9 +7,7 @@ import {
 import { HttpError } from "../../../errors/http-error";
 
 /**
- * UNIT TEST FOR BloodRequestService (with Nepalese names)
- * 
- * Comprehensive tests for blood request operations using authentic Nepalese patient names.
+ * UNIT TEST FOR BloodRequestService 
  */
 
 describe("BloodRequestService - Unit Tests", () => {

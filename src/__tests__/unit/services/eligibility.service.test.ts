@@ -3,9 +3,8 @@ import { SubmitEligibilityDTO } from "../../../dtos/eligibility.dto";
 import { HttpError } from "../../../errors/http-error";
 
 /**
- * UNIT TEST FOR EligibilityService (with Nepalese donor names)
- * 
- * Comprehensive tests for eligibility assessment with Nepalese donor scenarios.
+ * UNIT TEST FOR EligibilityService 
+ 
  */
 
 describe("EligibilityService - Unit Tests", () => {

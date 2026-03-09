@@ -3,7 +3,7 @@ import { RegisterDTO, LoginDTO, UpdateUserDTO } from "../../../dtos/user.dto";
 import { HttpError } from "../../../errors/http-error";
 
 /**
- * UNIT TEST FOR UserService (with Nepalese names)
+ * UNIT TEST FOR UserService 
  * 
  * This test file demonstrates comprehensive testing of user-related operations.
  * Tests cover: registration, login, password management, and user updates.

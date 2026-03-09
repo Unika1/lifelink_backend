@@ -7,9 +7,8 @@ import {
 import { HttpError } from "../../../errors/http-error";
 
 /**
- * UNIT TEST FOR HospitalService (with Nepalese hospital names)
+ * UNIT TEST FOR HospitalService 
  * 
- * Comprehensive tests using authentic Nepalese hospital names and locations.
  */
 
 describe("HospitalService - Unit Tests", () => {
